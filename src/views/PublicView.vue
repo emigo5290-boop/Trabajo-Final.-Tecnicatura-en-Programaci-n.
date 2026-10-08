@@ -1,0 +1,71 @@
+<script setup>
+import { ref, computed } from "vue";
+import { useApp } from "../application/context.js";
+import { iso } from "../domain/date.js";
+import CourtStatus from "../components/CourtStatus.vue";
+import AvailabilityCalendar from "../components/AvailabilityCalendar.vue";
+import ReserveButton from "../components/ReserveButton.vue";
+import ActivityCard from "../components/ActivityCard.vue";
+const app = useApp(),
+  day = ref(iso(new Date()));
+const activities = computed(() =>
+  app.activities.value
+    .filter((a) => a.fecha >= iso(app.clock.value))
+    .sort((a, b) => a.fecha.localeCompare(b.fecha)),
+);
+</script>
+<template>
+  <h1 class="sr-only" tabindex="-1">SUM Municipal · Bella Vista</h1>
+  <section
+    v-if="activities.length"
+    class="seccion stack"
+    aria-label="Actividades publicadas"
+  >
+    <ActivityCard v-for="a in activities" :key="a.id" :activity="a" />
+  </section>
+  <CourtStatus reserve />
+  <section class="seccion">
+    <h2>Calendario de disponibilidad</h2>
+    <p class="sub">
+      Elegí un día para consultar los horarios libres, reservados, ocupados o
+      bloqueados.
+    </p>
+    <AvailabilityCalendar v-model="day" />
+    <div class="actions"><ReserveButton /></div>
+  </section>
+  <section class="seccion">
+    <h2>Información del SUM</h2>
+    <dl class="info-datos">
+      <div>
+        <dt>Dirección</dt>
+        <dd>{{ app.info.value.direccion }}</dd>
+      </div>
+      <div>
+        <dt>Horarios</dt>
+        <dd>{{ app.info.value.horario }}</dd>
+      </div>
+    </dl>
+    <div class="info-listas">
+      <div>
+        <h3>Uso de la cancha</h3>
+        <p>{{ app.info.value.uso }}</p>
+      </div>
+      <div>
+        <h3>Actividades permitidas</h3>
+        <ul>
+          <li v-for="(item, i) in app.info.value.actividades" :key="i">
+            {{ item }}
+          </li>
+        </ul>
+      </div>
+      <div>
+        <h3>Normas de utilización</h3>
+        <ul>
+          <li v-for="(item, i) in app.info.value.normas" :key="i">
+            {{ item }}
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</template>

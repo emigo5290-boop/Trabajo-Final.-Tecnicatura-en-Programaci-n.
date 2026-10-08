@@ -1,0 +1,109 @@
+import { createRouter, createWebHashHistory } from "vue-router";
+import PublicView from "../views/PublicView.vue";
+import AuthView from "../views/AuthView.vue";
+import DashboardView from "../views/DashboardView.vue";
+import BookingView from "../views/BookingView.vue";
+import MyReservationsView from "../views/MyReservationsView.vue";
+import ProfileView from "../views/ProfileView.vue";
+import CalendarView from "../views/CalendarView.vue";
+import ReservationsView from "../views/ReservationsView.vue";
+import CourtView from "../views/CourtView.vue";
+import PressAccessView from "../views/PressAccessView.vue";
+import ActivitiesView from "../views/ActivitiesView.vue";
+import InformationView from "../views/InformationView.vue";
+export const home = (role) =>
+  ({ cliente: "/cliente", admin: "/administracion", prensa: "/prensa" })[
+    role
+  ] || "/";
+export const menus = {
+  cliente: [
+    ["/cliente", "Inicio"],
+    ["/cliente/reservar", "Reservar cancha"],
+    ["/cliente/reservas", "Mis reservas"],
+    ["/cliente/perfil", "Perfil"],
+  ],
+  admin: [
+    ["/administracion", "Inicio"],
+    ["/administracion/calendario", "Calendario"],
+    ["/administracion/reservas", "Reservas"],
+    ["/administracion/solicitudes", "Solicitudes"],
+    ["/administracion/cancha", "Cancha"],
+    ["/administracion/prensa", "Prensa"],
+  ],
+  prensa: [
+    ["/prensa", "Inicio"],
+    ["/prensa/actividades", "Actividades"],
+    ["/prensa/informacion", "Información"],
+  ],
+};
+export function createAppRouter(app) {
+  const secure = (path, component, role, title, props) => ({
+    path,
+    component,
+    meta: { role, title },
+    props,
+  });
+  const router = createRouter({
+    history: createWebHashHistory(),
+    scrollBehavior: () => ({ top: 0 }),
+    routes: [
+      { path: "/", component: PublicView, meta: { title: "SUM Municipal" } },
+      ...["login", "registro", "verificacion", "recuperar", "nueva-clave"].map(
+        (mode) => ({
+          path: "/" + mode,
+          component: AuthView,
+          props: { mode },
+          meta: { title: "Acceso al SUM" },
+        }),
+      ),
+      secure("/cliente", DashboardView, "cliente", "Inicio"),
+      secure("/cliente/reservar", BookingView, "cliente", "Reservar cancha"),
+      secure(
+        "/cliente/reservas",
+        MyReservationsView,
+        "cliente",
+        "Mis reservas",
+      ),
+      secure("/cliente/perfil", ProfileView, "cliente", "Perfil"),
+      secure("/administracion", DashboardView, "admin", "Inicio"),
+      secure("/administracion/calendario", CalendarView, "admin", "Calendario"),
+      secure(
+        "/administracion/reservas",
+        ReservationsView,
+        "admin",
+        "Reservas",
+        { requests: false },
+      ),
+      secure(
+        "/administracion/solicitudes",
+        ReservationsView,
+        "admin",
+        "Solicitudes",
+        { requests: true },
+      ),
+      secure("/administracion/cancha", CourtView, "admin", "Cancha"),
+      secure("/administracion/prensa", PressAccessView, "admin", "Prensa"),
+      secure("/prensa", ActivitiesView, "prensa", "Actividades"),
+      secure("/prensa/actividades", ActivitiesView, "prensa", "Actividades"),
+      secure("/prensa/informacion", InformationView, "prensa", "Información"),
+      { path: "/:pathMatch(.*)*", redirect: "/" },
+    ],
+  });
+  router.beforeEach((to) => {
+    app.refresh();
+    if (to.meta.role && app.session.value?.rol !== to.meta.role)
+      return app.session.value
+        ? home(app.session.value.rol)
+        : { path: "/login", query: { next: to.path } };
+    if (to.path === "/verificacion" && !app.temp.read("verification", null))
+      return "/login";
+    if (to.path === "/nueva-clave") {
+      const v = app.temp.read("verification", null);
+      if (!v?.validado || v.expira <= Date.now()) return "/recuperar";
+    }
+  });
+  router.afterEach((to) => {
+    document.title = `${to.meta.title} · SUM Municipal`;
+  });
+  return router;
+}
