@@ -3,23 +3,33 @@
 /* Cifras de la administración */
 .cifras {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   border: 1px solid var(--line);
   border-radius: 14px;
   background: var(--panel);
   overflow: hidden;
   margin-top: 20px;
 }
-.cifras button {
+.cifras a {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  min-width: 0;
   border: 0;
   background: transparent;
   padding: 16px 10px;
   text-align: center;
   cursor: pointer;
   border-right: 1px solid var(--line);
+  color: var(--ink);
+  text-decoration: none;
 }
-.cifras button:last-child {
+.cifras a:last-child {
   border-right: 0;
+}
+.cifras a:focus-visible {
+  outline-offset: -4px;
 }
 .cifras b {
   display: block;
@@ -27,11 +37,11 @@
 }
 .cifras span {
   color: var(--ink-2);
-  font-size: 0.95rem;
+  font-size: clamp(0.8rem, 2vw, 0.95rem);
 }
 .dos-col {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
   gap: 24px;
   margin-top: 28px;
 }
@@ -100,7 +110,16 @@ tr:last-child td {
 /* Opciones de radio (estado de la cancha e informe) */
 .radios {
   display: grid;
+  min-width: 0;
   gap: 10px;
+  margin: 0 0 16px;
+  padding: 12px;
+  border: 1px solid var(--control-line);
+  border-radius: 12px;
+}
+.radios legend {
+  max-width: 100%;
+  padding: 0 4px;
 }
 .radio-op {
   display: flex;
@@ -117,6 +136,7 @@ tr:last-child td {
   background: var(--brand-soft);
 }
 .radio-op input {
+  flex: none;
   margin-top: 5px;
 }
 .radio-op strong {

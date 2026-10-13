@@ -28,10 +28,11 @@ const states = {
       <RouterLink
         v-for="(label, state) in states"
         :key="state"
-        class="btn btn-sec"
         :to="{ path: '/administracion/solicitudes', query: { estado: state } }"
-        >{{ app.reservations.value.filter((r) => r.estado === state).length }}
-        {{ label }}</RouterLink
+        ><b>{{
+          app.reservations.value.filter((r) => r.estado === state).length
+        }}</b>
+        <span>{{ label }}</span></RouterLink
       >
     </div>
     <div class="dos-col">

@@ -24,6 +24,7 @@
 }
 .lado .marca {
   padding: 0 6px;
+  gap: 8px;
 }
 .lado .logo {
   width: 46px;
@@ -32,7 +33,7 @@
 .lado .marca-nombre {
   font-size: 1.5rem;
 }
-.lado-cab {
+.lado-acc {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -40,6 +41,7 @@
 }
 .menu-btn {
   display: none;
+  flex: none;
 }
 .usuario-chip {
   margin: 0 6px;
@@ -83,14 +85,15 @@
   min-width: 0;
 }
 .cuerpo > .pag-tit {
-  margin-bottom: 4px;
+  margin-bottom: 24px;
 }
 .cuerpo .marcador:first-of-type {
   margin-top: 18px;
 }
 @media (max-width: 899px) {
   .app {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto 1fr;
   }
   .lado {
     border-right: 0;
@@ -101,7 +104,7 @@
   }
   .lado-in {
     position: static;
-    padding: 10px 16px;
+    padding: 10px var(--gutter);
     max-height: none;
     gap: 10px;
   }
@@ -120,15 +123,22 @@
   }
   .lado.abierto .lado-in {
     max-height: calc(100vh - 20px);
+    max-height: calc(100dvh - 20px);
     overflow: auto;
+  }
+}
+@media (max-width: 560px) {
+  .lado .marca-nombre {
+    font-size: 1.2rem;
   }
 }
 
 .bloque {
+  min-width: 0;
   background: var(--panel);
   border: 1px solid var(--line);
   border-radius: 16px;
-  padding: 18px 20px;
+  padding: 18px clamp(16px, 2vw, 20px);
 }
 .bloque h2,
 .bloque h3 {
@@ -167,7 +177,12 @@
   border-radius: 14px;
   padding: 16px 18px;
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 10px;
+}
+.tarjeta-sol > p,
+.tarjeta-sol > .actions {
+  margin: 0;
 }
 .tarjeta-sol .cab-sol {
   display: flex;
@@ -181,7 +196,7 @@
 }
 .dl {
   display: grid;
-  grid-template-columns: max-content 1fr;
+  grid-template-columns: max-content minmax(0, 1fr);
   gap: 6px 18px;
   margin: 0;
 }
@@ -242,6 +257,7 @@
 .hoja .lin-firma {
   display: inline-block;
   width: 220px;
+  max-width: 100%;
   border-bottom: 1px solid var(--ink);
   vertical-align: baseline;
 }

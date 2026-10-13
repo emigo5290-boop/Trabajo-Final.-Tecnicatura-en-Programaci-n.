@@ -13,28 +13,25 @@
   color: var(--ink);
   font-weight: 700;
 }
-.nav a.router-link-exact-active {
-  background: var(--brand-soft);
-  color: var(--brand);
-}
 .nav a:hover {
   background: var(--panel-2);
 }
+.nav a.router-link-exact-active {
+  background: var(--brand-soft);
+  color: var(--brand);
+  box-shadow: inset 3px 0 var(--brand);
+}
 .stack {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 20px;
 }
 .actions {
   display: flex;
+  align-items: center;
   gap: 10px;
   flex-wrap: wrap;
   margin: 16px 0;
-}
-.page-heading {
-  margin-bottom: 24px;
-}
-.auth-card h1 {
-  margin-bottom: 18px;
 }
 .notice {
   position: fixed;
@@ -52,6 +49,9 @@
   align-items: center;
 }
 .notice button {
+  flex: none;
+  width: 44px;
+  height: 44px;
   background: none;
   color: inherit;
   border: 1px solid currentColor;
@@ -71,25 +71,8 @@
   color: var(--brand);
   font-weight: 900;
 }
-.act-flyer {
-  max-height: 360px;
-  max-width: 100%;
-  object-fit: contain;
-}
-dialog.modal {
-  border: 1px solid var(--line);
-}
 dialog::backdrop {
   background: var(--overlay);
-}
-.cal-sem span {
-  min-width: 0;
-}
-.cal {
-  min-width: 0;
-}
-.dia {
-  min-width: 0;
 }
 .skip {
   position: absolute;
@@ -103,28 +86,8 @@ dialog::backdrop {
 }
 
 @media (max-width: 560px) {
-  .cab-in {
-    flex-wrap: wrap;
-  }
-  .cab-acc {
-    width: 100%;
-    /* Cuando los controles bajan de línea en móvil, quedan alineados al borde derecho. */
-    justify-content: flex-end;
-  }
-  .marca-nombre {
-    font-size: 1.4rem;
-  }
-  .marca-muni {
-    font-size: 0.82rem;
-  }
   .brand-mark {
     font-size: 1.5rem;
-  }
-  .lado .marca-muni {
-    max-width: 180px;
-  }
-  .lado .brand-mark {
-    display: none;
   }
 }
 
@@ -150,10 +113,6 @@ textarea:disabled {
   opacity: 1;
   cursor: not-allowed;
 }
-:focus-visible {
-  outline: 3px solid var(--focus);
-  outline-offset: 3px;
-}
 .btn,
 .cal-nav,
 .dia,
@@ -175,7 +134,7 @@ textarea:disabled {
   .cal-nav:hover,
   .dia:not(.sel):not(:disabled):hover,
   .tabs button:not([aria-pressed="true"]):hover,
-  .cifras button:hover {
+  .cifras a:hover {
     background: var(--brand-soft);
   }
   .btn-cta:not(:disabled):hover {
@@ -187,11 +146,6 @@ textarea:disabled {
   tbody tr:hover {
     background: var(--panel-2);
   }
-}
-.nav a.router-link-exact-active {
-  background: var(--brand-soft);
-  color: var(--brand);
-  box-shadow: inset 3px 0 var(--brand);
 }
 .bloque,
 .auth-card,
@@ -272,34 +226,9 @@ textarea:disabled {
   padding: 0 6px;
   flex-wrap: wrap;
 }
-.cab-acc {
-  align-items: center;
-}
 @media (max-width: 899px) {
   .lado .theme-control {
     padding: 0;
-  }
-}
-@media (max-width: 520px) {
-  .cal {
-    padding: 10px;
-  }
-  .cal-grid,
-  .cal-sem {
-    gap: 2px;
-  }
-  .dia {
-    min-height: 40px;
-  }
-  .cal-cab h3 {
-    font-size: 1.35rem;
-    text-align: center;
-  }
-  .dos-col {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .mar-horas {
-    flex-wrap: wrap;
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -311,12 +240,4 @@ textarea:disabled {
   .nav button {
     transition: none;
   }
-}
-
-/* El dialogo conserva margen y la firma cabe en celulares angostos. */
-dialog.modal {
-  width: min(680px, calc(100% - 32px));
-}
-.hoja .lin-firma {
-  max-width: 100%;
 }
