@@ -32,8 +32,10 @@ function logout() {
   <div v-if="secure && role" class="app">
     <aside class="lado" :class="{ abierto: open }">
       <div class="lado-in">
-        <div class="lado-cab">
-          <AppBrand /><button
+        <AppBrand />
+        <div class="lado-acc">
+          <ThemeSelector />
+          <button
             class="btn btn-sec menu-btn"
             :aria-expanded="open"
             aria-controls="nav-principal"
@@ -42,7 +44,6 @@ function logout() {
             Menú
           </button>
         </div>
-        <ThemeSelector />
         <p class="usuario-chip">{{ label }}</p>
         <nav id="nav-principal" class="nav" aria-label="Menú principal">
           <RouterLink
@@ -68,21 +69,14 @@ function logout() {
           <ThemeSelector />
           <RouterLink
             class="btn btn-sec btn-chico"
-            :to="route.path === '/' ? (role ? home(role) : '/login') : '/'"
-            >{{
-              route.path === "/"
-                ? role
-                  ? "Ir a mi panel"
-                  : "Ingresar"
-                : "Volver al SUM"
-            }}</RouterLink
+            :to="role ? home(role) : '/login'"
+            >{{ role ? "Ir a mi panel" : "Ingresar" }}</RouterLink
           >
         </div>
       </div>
     </header>
     <main id="main" class="contenedor" tabindex="-1"><slot /></main>
     <footer class="contenedor pie">
-      SUM Municipal · Municipalidad de Bella Vista<br />
-    </footer></template
-  >
+      SUM Municipal · Municipalidad de Bella Vista<br /></footer
+  ></template>
 </template>
