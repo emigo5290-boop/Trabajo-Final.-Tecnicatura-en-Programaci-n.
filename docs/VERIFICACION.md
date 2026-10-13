@@ -1,5 +1,18 @@
 # Verificación de la entrega
 
+## Revisión responsive (13 de octubre de 2026)
+
+- Se revisaron los componentes y estilos antes de editar. Se corrigieron el cálculo global de tamaños, los campos de ancho fijo y los desplazamientos manuales de botones y marcador; las reglas se ajustaron en sus hojas existentes.
+- Encabezado: “Ingresar” enlaza a `/login` junto al selector de tema. Con una sesión iniciada se conserva “Ir a mi panel”. El logo y el nombre comparten un enlace a `/`, con nombre accesible y foco visible.
+- Chrome con perfil temporal y datos de demostración: 19 rutas × 5 anchos (320, 390, 768, 1024 y 1440 px) × 2 temas = 190 comprobaciones sin desbordes horizontales ni excepciones JavaScript.
+- Se inspeccionaron capturas de escritorio y móvil de la vista pública, ingreso, reserva, administración, formularios y diálogos. El calendario cambia a una columna según el espacio disponible en el contenido, incluyendo los paneles con barra lateral.
+- 89 comprobaciones adicionales: alineación y destino del acceso, clic sobre logo y nombre, Tab/Enter y foco visible, nombre del enlace en el árbol de accesibilidad, cambio de tema, ingreso como administración, menú móvil, informes, detalle y nota formal, cierre con Escape y retorno del foco, campos de fechas, vista previa de reserva y editor de actividades. Se verificó también el contenido interior de tarjetas y diálogos y los estados de la cancha.
+- `npm run build`: correcto.
+- `npm test`: 17 de 18 pruebas pasan. La prueba de contraste del tema claro falla en `reservada/reservada-soft` (2,07:1 frente a 4,5:1 requerido). Se reprodujo el mismo fallo con `general.css` de `HEAD`, anterior a estos cambios. La paleta existente se conservó.
+- Alcance visual: navegador Chromium con anchos emulados; no se probaron dispositivos físicos ni un lector de pantalla real.
+
+## Entrega inicial
+
 - `npm test`: 11 pruebas aprobadas.
 - `npm run build`: compilación de producción correcta.
 - Componentes y plantillas procesados por el compilador oficial de Vue.

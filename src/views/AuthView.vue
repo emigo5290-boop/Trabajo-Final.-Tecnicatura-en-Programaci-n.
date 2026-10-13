@@ -168,7 +168,7 @@ function resend() {
         "
       />
       <p v-if="error" class="err" role="alert">{{ error }}</p>
-      <div class="actions">
+      <div class="actions" :class="{ 'login-actions': mode === 'login' }">
         <button class="btn btn-primary" :disabled="busy">
           {{
             busy
@@ -183,6 +183,11 @@ function resend() {
                       ? "Generar código"
                       : "Guardar contraseña"
           }}</button
+        ><RouterLink
+          v-if="mode === 'login'"
+          class="btn btn-sec"
+          :to="{ path: '/registro', query: route.query }"
+          >Registrarse</RouterLink
         ><button
           v-if="mode === 'verificacion'"
           type="button"
@@ -193,13 +198,8 @@ function resend() {
         </button>
       </div>
     </form>
-    <div class="actions">
-      <RouterLink
-        v-if="mode === 'login'"
-        class="btn btn-sec"
-        :to="{ path: '/registro', query: route.query }"
-        >Registrarse</RouterLink
-      ><RouterLink v-if="mode === 'login'" to="/recuperar"
+    <div class="actions" :class="{ 'login-recovery': mode === 'login' }">
+      <RouterLink v-if="mode === 'login'" to="/recuperar" class="btn-rec"
         >¿Olvidaste tu contraseña?</RouterLink
       ><RouterLink v-else :to="{ path: '/login', query: route.query }"
         >Volver al inicio de sesión</RouterLink

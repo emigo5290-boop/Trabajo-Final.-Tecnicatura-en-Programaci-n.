@@ -22,8 +22,7 @@ const labels = {
     :class="{ 'marcador--admin': admin }"
     aria-label="Estado actual de la cancha"
   >
-    <div :class="'t-' + status.clave" aria-live="polite">
-      <p class="mar-label">Estado actual de la cancha</p>
+    <div :class="'t-' + status.clave" aria-live="polite" id="card-estado">
       <h2 class="mar-estado" :class="{ largo: status.clave === 'fuera' }">
         <span class="lampara" aria-hidden="true" />{{ labels[status.clave] }}
       </h2>

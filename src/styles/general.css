@@ -1,84 +1,95 @@
-/* SUM Municipal - ESTILOS GENERALES (los cargan todas las páginas) */
-
-/* =====================================================================
-   TOKENS DE DISEÑO (colores, tipografía)
-   Se redefinen para modo oscuro según la preferencia del sistema.
-   ===================================================================== */
-:root {
-  --bg: #edf0ec; /* pared de gimnasio, gris verdoso muy claro */
-  --panel: #ffffff;
-  --panel-2: #f4f6f3;
-  --ink: #14232b; /* texto principal */
-  --ink-2: #4a5a63; /* texto secundario */
-  --line: #d3dad5;
-  --brand: #0e5a6b; /* azul petróleo de cancha */
-  --brand-ink: #ffffff;
-  --brand-soft: #dcebee;
-  --peligro: #b42318;
-  --peligro-ink: #ffffff;
-  --focus: #1d6fd1;
-
-  /* Estados (texto oscuro sobre fondo suave, para buen contraste) */
-  --libre: #146c43;
-  --libre-soft: #ddf2e5;
-  --reservada: #8a4b00;
-  --reservada-soft: #fcebcb;
-  --ocupada: #a4231a;
-  --ocupada-soft: #fbddda;
-  --fuera: #4a555e;
-  --fuera-soft: #e4e7ea;
-  --bloq: #5b666e;
-  --bloq-soft: #eceff0;
-
-  --display:
-    "Big Shoulders Display", "Oswald", "Arial Narrow", Impact, sans-serif;
-  --texto:
-    "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", Roboto,
-    Arial, sans-serif;
-
-  color-scheme: light dark;
-  box-sizing: border-box;
-  /* Margen seguro en celulares (barras del sistema) */
-  padding-top: env(safe-area-inset-top, 0px);
-  padding-bottom: env(safe-area-inset-bottom, 0px);
+/* Carga Okaluera desde public/fonts. Vite sirve public desde la raíz del sitio,
+   por eso la URL empieza en /fonts y no en /public/fonts. */
+@font-face {
+  font-family: "Barberchop";
+  src: url("/fonts/BarberChop.woff2") format("woff2");
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
 }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #0d1519;
-    --panel: #152128;
-    --panel-2: #1b2a32;
-    --ink: #e7eef0;
-    --ink-2: #a3b2b9;
-    --line: #2a3b44;
-    --brand: #4fb3c6;
-    --brand-ink: #08262d;
-    --brand-soft: #173a44;
-    --peligro: #f97066;
-    --peligro-ink: #2a0a07;
-    --focus: #7db6ff;
-    --libre: #5edb9a;
-    --libre-soft: #143524;
-    --reservada: #ffc266;
-    --reservada-soft: #3a2a0c;
-    --ocupada: #ff8a80;
-    --ocupada-soft: #3d1613;
-    --fuera: #b4bfc6;
-    --fuera-soft: #26313a;
-    --bloq: #9aa6ae;
-    --bloq-soft: #1e2a31;
-  }
+
+/* Carga Barber Chop para los encabezados y textos decorativos (--display). */
+@font-face {
+  font-family: "LTint";
+  src: url("/fonts/LTInternet-Regular.woff2") format("woff2");
+  /* El archivo declara un peso regular; el navegador sintetiza negritas si hacen falta. */
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Paleta central: cambiar estos tokens para ajustar ambos temas. */
+:root {
+  color-scheme: light;
+  --bg: #f5f1e8;
+  --panel: #fffbf3;
+  --panel-2: #eee9de;
+  --ink: #243b3a;
+  --ink-: #4b4c4c;
+  --ink-2: #4f504f;
+  --line: #ded8cb;
+  --control-line: #c2c1bc;
+  --brand: #07566a;
+  --brand-hover: #064657;
+  --brand-ink: #fffbf3;
+  --brand-soft: #e0ecea;
+  --secondary: #168fa1;
+  --accent: #8ca83e;
+  --warning-accent: #e4aa43;
+  --peligro: #b9232d;
+  --peligro-hover: #9d1c25;
+  --peligro-ink: #fffbf3;
+  --focus: #07566a;
+  --libre: #356b42;
+  --libre-soft: #e5eddd;
+  --reservada: #ea8f05;
+  --reservada-soft: #f6e9cd;
+  --ocupada: #b9232d;
+  --ocupada-soft: #f7e4df;
+  --fuera: #505e59;
+  --fuera-soft: #e7e7df;
+  --bloq: #596a64;
+  --bloq-soft: #eee9de;
+  --disabled-bg: #e7e2d7;
+  --disabled-ink: #53645e;
+  --shadow: 0 2px 12px rgb(36 59 58 / 6%);
+  --shadow-modal: 0 16px 48px rgb(18 35 40 / 22%);
+  --overlay: rgb(6 14 18 / 65%);
+  --score-bg: #c9f3cc;
+  --score-ink: var(--ink);
+  --score-muted: var(--ink-2);
+  --score-line: var(--control-line);
+  --score-note: var(--ink);
+  --score-libre: var(--libre);
+  --score-reservada: var(--reservada);
+  --score-ocupada: var(--ocupada);
+  --score-fuera: var(--fuera);
+  --selected-dot: var(--warning-accent);
+  /* Barber Chop se usa en los elementos que referencian var(--display). */
+  --display: "LTint", Impact, "Arial Narrow", sans-serif;
+  /* LTint se usa en el texto general que referencia var(--texto). */
+  --texto: "LTint", system-ui, sans-serif;
+  --gutter: clamp(16px, 3vw, 20px);
+  --estados: "Barberchop", Impact, "Arial Narrow", sans-serif;
 }
 :root[data-theme="dark"] {
+  color-scheme: dark;
   --bg: #0d1519;
   --panel: #152128;
   --panel-2: #1b2a32;
   --ink: #e7eef0;
   --ink-2: #a3b2b9;
-  --line: #2a3b44;
+  --line: #344750;
+  --control-line: #73868f;
   --brand: #4fb3c6;
+  --brand-hover: #70c3d2;
   --brand-ink: #08262d;
   --brand-soft: #173a44;
+  --secondary: #57bac8;
+  --accent: #afc76b;
+  --warning-accent: #ffc266;
   --peligro: #f97066;
+  --peligro-hover: #ff9188;
   --peligro-ink: #2a0a07;
   --focus: #7db6ff;
   --libre: #5edb9a;
@@ -89,8 +100,22 @@
   --ocupada-soft: #3d1613;
   --fuera: #b4bfc6;
   --fuera-soft: #26313a;
-  --bloq: #9aa6ae;
+  --bloq: #a3b2b9;
   --bloq-soft: #1e2a31;
+  --disabled-bg: #26343c;
+  --disabled-ink: #a3b2b9;
+  --shadow: 0 2px 12px rgb(0 0 0 / 16%);
+  --shadow-modal: 0 16px 48px rgb(0 0 0 / 40%);
+  --score-bg: #0b171c;
+  --score-ink: #eaf1f3;
+  --score-muted: #afc0c7;
+  --score-note: #c9d6db;
+  --score-line: #53666e;
+  --score-libre: #3ddc84;
+  --score-reservada: #ffb020;
+  --score-ocupada: #ff8a80;
+  --score-fuera: #b4bfc6;
+  --selected-dot: #08262d;
 }
 
 /* =====================================================================
@@ -102,6 +127,7 @@
   box-sizing: inherit;
 }
 html {
+  box-sizing: border-box;
   scroll-padding-top: env(safe-area-inset-top, 0px);
   -webkit-text-size-adjust: 100%;
   font-size: 17px;
@@ -118,6 +144,10 @@ body {
   color: var(--ink);
   font: 400 1.0625rem/1.55 var(--texto);
   min-height: 100vh;
+  overflow-wrap: anywhere;
+}
+main {
+  container-type: inline-size;
 }
 h1,
 h2,
@@ -133,7 +163,7 @@ a {
 }
 :focus-visible {
   outline: 3px solid var(--focus);
-  outline-offset: 2px;
+  outline-offset: 3px;
 }
 .sr-only {
   position: absolute;
@@ -146,7 +176,7 @@ a {
 .contenedor {
   max-width: 1120px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 var(--gutter);
 }
 [hidden] {
   display: none !important;
@@ -156,22 +186,22 @@ a {
 .t-libre {
   --tone: var(--libre);
   --tone-soft: var(--libre-soft);
-  --led: #3ddc84;
+  --led: var(--score-libre);
 }
 .t-reservada {
   --tone: var(--reservada);
   --tone-soft: var(--reservada-soft);
-  --led: #ffb020;
+  --led: var(--score-reservada);
 }
 .t-ocupada {
   --tone: var(--ocupada);
   --tone-soft: var(--ocupada-soft);
-  --led: #ff5449;
+  --led: var(--score-ocupada);
 }
 .t-fuera {
   --tone: var(--fuera);
   --tone-soft: var(--fuera-soft);
-  --led: #9ca7af;
+  --led: var(--score-fuera);
 }
 .t-bloq {
   --tone: var(--bloq);
@@ -203,10 +233,11 @@ a {
 }
 .cab-in {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 14px;
-  padding: 12px 20px;
+  padding: 12px var(--gutter);
   max-width: 1120px;
   margin: 0 auto;
 }
@@ -215,6 +246,10 @@ a {
   align-items: center;
   gap: 14px;
   min-width: 0;
+  max-width: 100%;
+  color: var(--ink);
+  text-decoration: none;
+  border-radius: 6px;
 }
 .logo {
   width: 54px;
@@ -237,9 +272,22 @@ a {
 }
 .cab-acc {
   display: flex;
+  align-items: center;
   gap: 8px;
-  flex-wrap: wrap;
   justify-content: flex-end;
+  margin-left: auto;
+  flex: none;
+}
+@media (max-width: 560px) {
+  .cab-acc {
+    width: 100%;
+  }
+  .marca-nombre {
+    font-size: 1.4rem;
+  }
+  .marca-muni {
+    font-size: 0.82rem;
+  }
 }
 
 /* =====================================================================
@@ -251,7 +299,8 @@ a {
   justify-content: center;
   gap: 8px;
   min-height: 48px;
-  padding: 0 20px;
+  max-width: 100%;
+  padding: 10px 20px;
   border-radius: 12px;
   border: 1.5px solid transparent;
   font-weight: 700;
@@ -267,20 +316,22 @@ a {
 .btn-sec {
   background: transparent;
   color: var(--ink);
-  border-color: var(--ink-2);
+  border-color: var(--control-line);
 }
 .btn-peligro {
   background: var(--peligro);
   color: var(--peligro-ink);
 }
 .btn-chico {
-  min-height: 38px;
-  padding: 0 13px;
+  min-height: 44px;
+  padding: 8px 13px;
   font-size: 0.92rem;
   border-radius: 9px;
 }
 .btn:disabled {
-  opacity: 0.55;
+  background: var(--disabled-bg);
+  color: var(--disabled-ink);
+  border-color: var(--control-line);
   cursor: not-allowed;
 }
 .btn-link {
@@ -303,10 +354,11 @@ a {
    MARCADOR DEL ESTADO DE LA CANCHA (elemento principal)
    ===================================================================== */
 .marcador {
+  container-type: inline-size;
   position: relative;
   overflow: hidden;
-  background: #0b171c;
-  color: #eaf1f3;
+  background: var(--score-bg);
+  color: var(--score-ink);
   border-radius: 22px;
   padding: clamp(22px, 4vw, 44px);
   margin-top: 24px;
@@ -318,12 +370,14 @@ a {
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 400' fill='none' stroke='%23ffffff' stroke-opacity='.11' stroke-width='3'%3E%3Crect x='20' y='20' width='760' height='360'/%3E%3Cline x1='400' y1='20' x2='400' y2='380'/%3E%3Ccircle cx='400' cy='200' r='70'/%3E%3Crect x='20' y='110' width='150' height='180'/%3E%3Crect x='630' y='110' width='150' height='180'/%3E%3Cpath d='M170 145a55 55 0 0 1 0 110M630 145a55 55 0 0 0 0 110'/%3E%3C/svg%3E")
+  background: var(--score-ink);
+  opacity: 0.055;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 400' fill='none' stroke='%23ffffff' stroke-opacity='1' stroke-width='3'%3E%3Crect x='20' y='20' width='760' height='360'/%3E%3Cline x1='400' y1='20' x2='400' y2='380'/%3E%3Ccircle cx='400' cy='200' r='70'/%3E%3Crect x='20' y='110' width='150' height='180'/%3E%3Crect x='630' y='110' width='150' height='180'/%3E%3Cpath d='M170 145a55 55 0 0 1 0 110M630 145a55 55 0 0 0 0 110'/%3E%3C/svg%3E")
     right center/cover no-repeat;
 }
 .mar-label {
   margin: 0;
-  color: #afc0c7;
+  color: var(--score-muted);
   font-size: 1rem;
 }
 .mar-estado {
@@ -331,11 +385,11 @@ a {
   align-items: center;
   gap: 0.28em;
   margin: 0.12em 0 0;
-  font: 900 clamp(3.2rem, 13vw, 8rem)/0.92 var(--display);
+  font: 900 clamp(1.7rem, 10.5cqw, 8rem)/0.92 var(--estados);
   color: var(--led);
 }
 .mar-estado.largo {
-  font-size: clamp(2.5rem, 9.5vw, 5.6rem);
+  font-size: clamp(1.1rem, 6.5cqw, 5.6rem);
 }
 .lampara {
   width: 0.4em;
@@ -343,7 +397,7 @@ a {
   border-radius: 50%;
   background: var(--led);
   box-shadow:
-    0 0 0 0.07em rgba(255, 255, 255, 0.12),
+    0 0 0 0.07em #d6c135,
     0 0 0.5em var(--led);
   flex: none;
 }
@@ -362,6 +416,7 @@ a {
 }
 .mar-horas {
   display: flex;
+  flex-wrap: wrap;
   gap: clamp(24px, 6vw, 64px);
   margin: 22px 0 0;
 }
@@ -369,7 +424,7 @@ a {
   margin: 0;
 }
 .mar-horas dt {
-  color: #afc0c7;
+  color: var(--score-muted);
   font-size: 0.98rem;
 }
 .mar-horas dd {
@@ -380,7 +435,7 @@ a {
 }
 .mar-nota {
   margin: 16px 0 0;
-  color: #c9d6db;
+  color: var(--score-note);
   max-width: 52ch;
 }
 .mar-prox {
@@ -390,21 +445,24 @@ a {
   gap: 6px 18px;
   margin-top: 26px;
   padding-top: 16px;
-  border-top: 1px solid rgba(255, 255, 255, 0.18);
+  border-top: 1px solid var(--score-line);
 }
 .mar-prox b {
   font: 800 1.5rem var(--display);
   letter-spacing: 0.02em;
 }
 .mar-prox .lbl {
-  color: #afc0c7;
+  color: var(--score-muted);
 }
 .btn-cta {
+  display: flex;
+  width: fit-content;
   margin-top: 26px;
+  margin-left: auto;
   min-height: 56px;
-  padding: 0 30px;
-  background: #f4f7f5;
-  color: #0b171c;
+  padding: 12px 24px;
+  background: var(--panel);
+  color: var(--brand);
   font-size: 1.15rem;
   letter-spacing: 0.03em;
   border-radius: 14px;
@@ -417,7 +475,7 @@ a {
   border: 1px solid var(--line);
   border-left: 6px solid var(--tone, var(--brand));
   border-radius: 14px;
-  box-shadow: 0 1px 2px rgba(20, 35, 43, 0.06);
+  box-shadow: var(--shadow);
 }
 .marcador--admin::before {
   content: none;
@@ -482,12 +540,13 @@ a {
   gap: 28px;
   align-items: start;
 }
-@media (max-width: 880px) {
+@container (max-width: 760px) {
   .cal-wrap {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 .cal {
+  min-width: 0;
   background: var(--panel);
   border: 1px solid var(--line);
   border-radius: 16px;
@@ -497,17 +556,20 @@ a {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 8px;
   margin-bottom: 12px;
 }
 .cal-cab h3 {
   font: 900 1.6rem var(--display);
   text-transform: capitalize;
+  text-align: center;
 }
 .cal-nav {
+  flex: none;
   width: 44px;
   height: 44px;
   border-radius: 10px;
-  border: 1.5px solid var(--line);
+  border: 1.5px solid var(--control-line);
   background: var(--panel-2);
   cursor: pointer;
   font-size: 1.2rem;
@@ -516,7 +578,7 @@ a {
 .cal-sem,
 .cal-grid {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(7, minmax(0, 1fr));
   gap: 4px;
 }
 .cal-sem span {
@@ -527,8 +589,9 @@ a {
 }
 .dia {
   position: relative;
-  aspect-ratio: 1;
+  min-width: 0;
   min-height: 44px;
+  padding: 8px 0;
   border: 2px solid transparent;
   border-radius: 10px;
   background: var(--panel-2);
@@ -566,7 +629,7 @@ a {
   background: var(--fuera);
 }
 .dia.sel.con .pto {
-  background: #ffc266;
+  background: var(--selected-dot);
 }
 .leyenda {
   display: flex;
@@ -575,6 +638,7 @@ a {
   margin-top: 14px;
 }
 .dia-panel {
+  min-width: 0;
   background: var(--panel);
   border: 1px solid var(--line);
   border-radius: 16px;
@@ -639,12 +703,25 @@ a {
   color: var(--ink-2);
   font-size: 0.95rem;
 }
+@media (max-width: 520px) {
+  .cal {
+    padding: 10px;
+  }
+  .cal-grid,
+  .cal-sem {
+    gap: 2px;
+  }
+  .cal-cab h3 {
+    font-size: 1.35rem;
+  }
+}
 
 /* =====================================================================
    FORMULARIOS (campos, errores, botones de envío)
    ===================================================================== */
 .campo {
   display: grid;
+  min-width: 0;
   gap: 6px;
   margin-bottom: 16px;
   align-content: start;
@@ -655,7 +732,7 @@ a {
 }
 .fila2 {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
 }
 @media (max-width: 560px) {
@@ -669,10 +746,11 @@ textarea {
   font: inherit;
   color: var(--ink);
   background: var(--panel);
-  border: 1.5px solid var(--ink-2);
+  border: 1.5px solid var(--control-line);
   border-radius: 10px;
   padding: 11px 12px;
   width: 100%;
+  min-width: 0;
   min-height: 48px;
 }
 textarea {
@@ -717,7 +795,7 @@ textarea[aria-invalid="true"] {
 .modal-fondo {
   position: fixed;
   inset: 0;
-  background: rgba(6, 14, 18, 0.65);
+  background: var(--overlay);
   display: grid;
   place-items: center;
   padding: 16px;
@@ -729,8 +807,9 @@ textarea[aria-invalid="true"] {
   color: var(--ink);
   border-radius: 18px;
   max-width: 680px;
-  width: 100%;
+  width: calc(100% - 32px);
   max-height: calc(100vh - 32px);
+  max-height: calc(100dvh - 32px);
   overflow: auto;
   padding: clamp(18px, 4vw, 26px);
 }
@@ -743,6 +822,10 @@ textarea[aria-invalid="true"] {
 }
 .modal-cab h2 {
   font: 900 1.8rem/1.05 var(--display);
+}
+.modal-cab > button {
+  flex: none;
+  min-width: 44px;
 }
 .modal-pie {
   display: flex;
@@ -767,7 +850,7 @@ textarea[aria-invalid="true"] {
   padding: 12px 16px;
   border-radius: 12px;
   font-weight: 700;
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-modal);
 }
 .toast.error {
   background: var(--peligro);
@@ -776,7 +859,7 @@ textarea[aria-invalid="true"] {
 .pie {
   border-top: 1px solid var(--line);
   margin-top: 56px;
-  padding: 22px 0 30px;
+  padding: 22px var(--gutter) 30px;
   color: var(--ink-2);
   font-size: 0.92rem;
 }

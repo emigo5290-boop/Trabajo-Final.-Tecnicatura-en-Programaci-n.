@@ -4,6 +4,7 @@ import { useRouter, useRoute } from "vue-router";
 import { useApp } from "../application/context.js";
 import { home, menus } from "../router/index.js";
 import AppBrand from "./AppBrand.vue";
+import ThemeSelector from "./ThemeSelector.vue";
 defineProps({ secure: Boolean });
 const app = useApp(),
   router = useRouter(),
@@ -31,8 +32,10 @@ function logout() {
   <div v-if="secure && role" class="app">
     <aside class="lado" :class="{ abierto: open }">
       <div class="lado-in">
-        <div class="lado-cab">
-          <AppBrand /><button
+        <AppBrand />
+        <div class="lado-acc">
+          <ThemeSelector />
+          <button
             class="btn btn-sec menu-btn"
             :aria-expanded="open"
             aria-controls="nav-principal"
@@ -63,25 +66,17 @@ function logout() {
       <div class="cab-in">
         <AppBrand />
         <div class="cab-acc">
+          <ThemeSelector />
           <RouterLink
             class="btn btn-sec btn-chico"
-            :to="route.path === '/' ? (role ? home(role) : '/login') : '/'"
-            >{{
-              route.path === "/"
-                ? role
-                  ? "Ir a mi panel"
-                  : "Ingresar"
-                : "Volver al SUM"
-            }}</RouterLink
+            :to="role ? home(role) : '/login'"
+            >{{ role ? "Ir a mi panel" : "Ingresar" }}</RouterLink
           >
         </div>
       </div>
     </header>
     <main id="main" class="contenedor" tabindex="-1"><slot /></main>
     <footer class="contenedor pie">
-      SUM Municipal · Municipalidad de Bella Vista<br />Versión de demostración:
-      los datos se guardan en este navegador. Los códigos se muestran en
-      pantalla; no se envían correos.
-    </footer></template
-  >
+      SUM Municipal · Municipalidad de Bella Vista<br /></footer
+  ></template>
 </template>

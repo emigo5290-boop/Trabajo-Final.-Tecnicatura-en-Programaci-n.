@@ -7,7 +7,6 @@ import { seedDemo } from "./infrastructure/seed.js";
 import { createPdfService } from "./infrastructure/pdf.js";
 import { readFlyer } from "./infrastructure/flyer.js";
 import { createAppRouter } from "./router/index.js";
-import "./styles/app.css";
 const storage = createStorage(browserStorage("localStorage"));
 seedDemo(storage);
 const services = createApplication({

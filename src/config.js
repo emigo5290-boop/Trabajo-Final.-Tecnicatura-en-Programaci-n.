@@ -3,7 +3,7 @@ export const CONFIG = {
   MUNICIPALIDAD: "Municipalidad de Bella Vista",
 
   // ★ Ruta del logo de la Municipalidad, contada desde la carpeta raíz (donde está index.html). Cambiar solo este valor.
-  LOGO_RUTA: "ruta/al/logo-municipalidad.png",
+  LOGO_RUTA: "/img/Logo.png",
 
   DIRECCION: "Calle y número a completar, Bella Vista, Tucumán",
   HORARIO_TEXTO: "Todos los días, de 08:00 a 23:00 hs",

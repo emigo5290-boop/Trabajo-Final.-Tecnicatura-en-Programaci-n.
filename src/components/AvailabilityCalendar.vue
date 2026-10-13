@@ -100,7 +100,16 @@ function move(n) {
               fuera: outsideService(app.court.value, date),
             }"
             :disabled="futureOnly && date < iso(app.clock.value)"
-            :aria-label="fechaLarga(date)"
+            :aria-label="
+              fechaLarga(date) +
+              (outsideService(app.court.value, date)
+                ? ', fuera de servicio'
+                : app.reservations.value.some(
+                      (r) => r.estado === 'aprobada' && r.fecha === date,
+                    )
+                  ? ', con reservas'
+                  : '')
+            "
             :aria-pressed="date === modelValue"
             @click="emit('update:modelValue', date)"
           >
