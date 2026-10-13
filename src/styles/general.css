@@ -300,6 +300,15 @@ a {
   background: transparent;
   color: var(--ink);
   border-color: #dfdddd;
+  position: relative;
+  left: 32em;
+  top: -3.5em;
+}
+.btn-rec{
+  position: relative;
+  left: 8em;
+  top: 2em;
+  color:#168fa1
 }
 .btn-peligro {
   background: var(--peligro);
@@ -712,8 +721,8 @@ textarea {
   border: 1.5px solid var(--control-line);
   border-radius: 10px;
   padding: 11px 12px;
-  width: 100%;
-  min-height: 48px;
+  width: 680px;
+  min-height: 40px;
 }
 textarea {
   min-height: 96px;

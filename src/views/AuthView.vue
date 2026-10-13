@@ -199,7 +199,7 @@ function resend() {
         class="btn btn-sec"
         :to="{ path: '/registro', query: route.query }"
         >Registrarse</RouterLink
-      ><RouterLink v-if="mode === 'login'" to="/recuperar"
+      ><RouterLink v-if="mode === 'login'" to="/recuperar" class="btn-rec"
         >¿Olvidaste tu contraseña?</RouterLink
       ><RouterLink v-else :to="{ path: '/login', query: route.query }"
         >Volver al inicio de sesión</RouterLink

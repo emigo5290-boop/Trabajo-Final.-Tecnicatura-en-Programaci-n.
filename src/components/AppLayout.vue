@@ -82,9 +82,7 @@ function logout() {
     </header>
     <main id="main" class="contenedor" tabindex="-1"><slot /></main>
     <footer class="contenedor pie">
-      SUM Municipal · Municipalidad de Bella Vista<br />Versión de demostración:
-      los datos se guardan en este navegador. Los códigos se muestran en
-      pantalla; no se envían correos.
+      SUM Municipal · Municipalidad de Bella Vista<br />
     </footer></template
   >
 </template>

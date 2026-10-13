@@ -1,7 +1,7 @@
 /* SUM Municipal - Estilos de login, registro, recuperación y verificación */
 
 .auth-card {
-  max-width: 540px;
+  max-width: 700px;
   margin: 32px auto;
   background: var(--panel);
   border: 1px solid var(--line);
@@ -45,4 +45,7 @@
   text-align: center;
   font: 900 2.2rem var(--display);
   padding: 0;
+}
+.auth-card form .actions{
+  justify-content: space-between;
 }
