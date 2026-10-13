@@ -54,7 +54,7 @@
   --shadow: 0 2px 12px rgb(36 59 58 / 6%);
   --shadow-modal: 0 16px 48px rgb(18 35 40 / 22%);
   --overlay: rgb(6 14 18 / 65%);
-  --score-bg: #c8e6ca;
+  --score-bg: #c9f3cc;
   --score-ink: var(--ink);
   --score-muted: var(--ink-2);
   --score-line: var(--control-line);
