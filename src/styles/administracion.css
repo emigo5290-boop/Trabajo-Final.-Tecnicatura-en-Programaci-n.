@@ -86,7 +86,7 @@ tr:last-child td {
 .tabs button {
   padding: 9px 16px;
   border-radius: 999px;
-  border: 1.5px solid var(--ink-2);
+  border: 1.5px solid var(--control-line);
   background: transparent;
   font-weight: 700;
   cursor: pointer;
@@ -107,7 +107,7 @@ tr:last-child td {
   gap: 12px;
   align-items: flex-start;
   padding: 12px 14px;
-  border: 1.5px solid var(--line);
+  border: 1.5px solid var(--control-line);
   border-radius: 12px;
   background: var(--panel);
   cursor: pointer;

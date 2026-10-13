@@ -87,3 +87,13 @@ npm run dev
 ```
 
 Estos comandos de aprobación corresponden a las versiones de npm que muestran ese aviso. No son necesarios en las versiones anteriores que no incluyen `install-scripts`.
+
+## Temas visuales
+
+La paleta se centraliza al inicio de `src/styles/general.css`: `:root` define el modo claro y `:root[data-theme="dark"]` el oscuro. Ajustar los tokens `--bg`, `--panel`, `--panel-2`, `--ink`, `--ink-2`, `--brand` y sus variantes de estados; `--control-line` distingue controles de los separadores decorativos (`--line`). Los tokens `--score-*` controlan el marcador de cancha. Mantener contraste de al menos 4.5:1 en texto normal y 3:1 en controles y foco; amarillo y lima se reservan para acentos, no texto sobre crema.
+
+`ThemeSelector.vue` aparece en la cabecera pública y en todos los paneles, incluso con el menú móvil cerrado. `public/theme.js` aplica la preferencia antes de cargar la aplicación para evitar destellos. La hoja de estilos se carga en el encabezado de `index.html` para bloquear el primer pintado hasta que la paleta esté disponible. Guarda claro/oscuro en `localStorage` (`sumbv_theme`); Sistema elimina esa preferencia y sigue los cambios del sistema operativo. También sincroniza pestañas y tolera almacenamiento bloqueado. La nota formal sigue el tema de pantalla; la generación de PDF conserva su formato documental. El logo se muestra sin filtros ni recoloración.
+
+Este proyecto incluye cliente, administración y prensa. No contiene rutas de superadmin ni pantalla de sistema suspendido; los componentes compartidos adoptarán la paleta cuando esas vistas se incorporen.
+
+Validación: `npm test` incluye pruebas de preferencia guardada, sistema, sincronización, almacenamiento bloqueado y contraste. `npm run build` compila la aplicación. Se revisaron las 19 rutas existentes y la nota formal en Edge, con ambos temas y anchos de 1440, 768, 360 y 320 px. El tamaño del texto del marcador depende del ancho de su contenedor para evitar recortes.

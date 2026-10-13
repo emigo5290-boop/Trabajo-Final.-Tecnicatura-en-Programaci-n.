@@ -4,6 +4,7 @@ import { useRouter, useRoute } from "vue-router";
 import { useApp } from "../application/context.js";
 import { home, menus } from "../router/index.js";
 import AppBrand from "./AppBrand.vue";
+import ThemeSelector from "./ThemeSelector.vue";
 defineProps({ secure: Boolean });
 const app = useApp(),
   router = useRouter(),
@@ -41,6 +42,7 @@ function logout() {
             Menú
           </button>
         </div>
+        <ThemeSelector />
         <p class="usuario-chip">{{ label }}</p>
         <nav id="nav-principal" class="nav" aria-label="Menú principal">
           <RouterLink
@@ -63,6 +65,7 @@ function logout() {
       <div class="cab-in">
         <AppBrand />
         <div class="cab-acc">
+          <ThemeSelector />
           <RouterLink
             class="btn btn-sec btn-chico"
             :to="route.path === '/' ? (role ? home(role) : '/login') : '/'"

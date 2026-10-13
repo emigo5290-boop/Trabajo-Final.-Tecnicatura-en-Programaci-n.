@@ -1,84 +1,76 @@
-/* SUM Municipal - ESTILOS GENERALES (los cargan todas las páginas) */
-
-/* =====================================================================
-   TOKENS DE DISEÑO (colores, tipografía)
-   Se redefinen para modo oscuro según la preferencia del sistema.
-   ===================================================================== */
+/* Paleta central: cambiar estos tokens para ajustar ambos temas. */
 :root {
-  --bg: #edf0ec; /* pared de gimnasio, gris verdoso muy claro */
-  --panel: #ffffff;
-  --panel-2: #f4f6f3;
-  --ink: #14232b; /* texto principal */
-  --ink-2: #4a5a63; /* texto secundario */
-  --line: #d3dad5;
-  --brand: #0e5a6b; /* azul petróleo de cancha */
-  --brand-ink: #ffffff;
-  --brand-soft: #dcebee;
-  --peligro: #b42318;
-  --peligro-ink: #ffffff;
-  --focus: #1d6fd1;
-
-  /* Estados (texto oscuro sobre fondo suave, para buen contraste) */
-  --libre: #146c43;
-  --libre-soft: #ddf2e5;
-  --reservada: #8a4b00;
-  --reservada-soft: #fcebcb;
-  --ocupada: #a4231a;
-  --ocupada-soft: #fbddda;
-  --fuera: #4a555e;
-  --fuera-soft: #e4e7ea;
-  --bloq: #5b666e;
-  --bloq-soft: #eceff0;
-
+  color-scheme: light;
+  --bg: #f5f1e8;
+  --panel: #fffbf3;
+  --panel-2: #eee9de;
+  --ink: #243b3a;
+  --ink-2: #596a64;
+  --line: #ded8cb;
+  --control-line: #76847b;
+  --brand: #07566a;
+  --brand-hover: #064657;
+  --brand-ink: #fffbf3;
+  --brand-soft: #e0ecea;
+  --secondary: #168fa1;
+  --accent: #8ca83e;
+  --warning-accent: #e4aa43;
+  --peligro: #b9232d;
+  --peligro-hover: #9d1c25;
+  --peligro-ink: #fffbf3;
+  --focus: #07566a;
+  --libre: #356b42;
+  --libre-soft: #e5eddd;
+  --reservada: #805211;
+  --reservada-soft: #f6e9cd;
+  --ocupada: #b9232d;
+  --ocupada-soft: #f7e4df;
+  --fuera: #505e59;
+  --fuera-soft: #e7e7df;
+  --bloq: #596a64;
+  --bloq-soft: #eee9de;
+  --disabled-bg: #e7e2d7;
+  --disabled-ink: #53645e;
+  --shadow: 0 2px 12px rgb(36 59 58 / 6%);
+  --shadow-modal: 0 16px 48px rgb(18 35 40 / 22%);
+  --overlay: rgb(6 14 18 / 65%);
+  --score-bg: var(--brand-soft);
+  --score-ink: var(--ink);
+  --score-muted: var(--ink-2);
+  --score-line: var(--control-line);
+  --score-note: var(--ink);
+  --score-libre: var(--libre);
+  --score-reservada: var(--reservada);
+  --score-ocupada: var(--ocupada);
+  --score-fuera: var(--fuera);
+  --selected-dot: var(--warning-accent);
   --display:
     "Big Shoulders Display", "Oswald", "Arial Narrow", Impact, sans-serif;
   --texto:
     "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", Roboto,
     Arial, sans-serif;
-
-  color-scheme: light dark;
   box-sizing: border-box;
-  /* Margen seguro en celulares (barras del sistema) */
   padding-top: env(safe-area-inset-top, 0px);
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #0d1519;
-    --panel: #152128;
-    --panel-2: #1b2a32;
-    --ink: #e7eef0;
-    --ink-2: #a3b2b9;
-    --line: #2a3b44;
-    --brand: #4fb3c6;
-    --brand-ink: #08262d;
-    --brand-soft: #173a44;
-    --peligro: #f97066;
-    --peligro-ink: #2a0a07;
-    --focus: #7db6ff;
-    --libre: #5edb9a;
-    --libre-soft: #143524;
-    --reservada: #ffc266;
-    --reservada-soft: #3a2a0c;
-    --ocupada: #ff8a80;
-    --ocupada-soft: #3d1613;
-    --fuera: #b4bfc6;
-    --fuera-soft: #26313a;
-    --bloq: #9aa6ae;
-    --bloq-soft: #1e2a31;
-  }
-}
 :root[data-theme="dark"] {
+  color-scheme: dark;
   --bg: #0d1519;
   --panel: #152128;
   --panel-2: #1b2a32;
   --ink: #e7eef0;
   --ink-2: #a3b2b9;
-  --line: #2a3b44;
+  --line: #344750;
+  --control-line: #73868f;
   --brand: #4fb3c6;
+  --brand-hover: #70c3d2;
   --brand-ink: #08262d;
   --brand-soft: #173a44;
+  --secondary: #57bac8;
+  --accent: #afc76b;
+  --warning-accent: #ffc266;
   --peligro: #f97066;
+  --peligro-hover: #ff9188;
   --peligro-ink: #2a0a07;
   --focus: #7db6ff;
   --libre: #5edb9a;
@@ -89,8 +81,22 @@
   --ocupada-soft: #3d1613;
   --fuera: #b4bfc6;
   --fuera-soft: #26313a;
-  --bloq: #9aa6ae;
+  --bloq: #a3b2b9;
   --bloq-soft: #1e2a31;
+  --disabled-bg: #26343c;
+  --disabled-ink: #a3b2b9;
+  --shadow: 0 2px 12px rgb(0 0 0 / 16%);
+  --shadow-modal: 0 16px 48px rgb(0 0 0 / 40%);
+  --score-bg: #0b171c;
+  --score-ink: #eaf1f3;
+  --score-muted: #afc0c7;
+  --score-note: #c9d6db;
+  --score-line: #53666e;
+  --score-libre: #3ddc84;
+  --score-reservada: #ffb020;
+  --score-ocupada: #ff8a80;
+  --score-fuera: #b4bfc6;
+  --selected-dot: #08262d;
 }
 
 /* =====================================================================
@@ -156,22 +162,22 @@ a {
 .t-libre {
   --tone: var(--libre);
   --tone-soft: var(--libre-soft);
-  --led: #3ddc84;
+  --led: var(--score-libre);
 }
 .t-reservada {
   --tone: var(--reservada);
   --tone-soft: var(--reservada-soft);
-  --led: #ffb020;
+  --led: var(--score-reservada);
 }
 .t-ocupada {
   --tone: var(--ocupada);
   --tone-soft: var(--ocupada-soft);
-  --led: #ff5449;
+  --led: var(--score-ocupada);
 }
 .t-fuera {
   --tone: var(--fuera);
   --tone-soft: var(--fuera-soft);
-  --led: #9ca7af;
+  --led: var(--score-fuera);
 }
 .t-bloq {
   --tone: var(--bloq);
@@ -267,7 +273,7 @@ a {
 .btn-sec {
   background: transparent;
   color: var(--ink);
-  border-color: var(--ink-2);
+  border-color: var(--control-line);
 }
 .btn-peligro {
   background: var(--peligro);
@@ -280,7 +286,9 @@ a {
   border-radius: 9px;
 }
 .btn:disabled {
-  opacity: 0.55;
+  background: var(--disabled-bg);
+  color: var(--disabled-ink);
+  border-color: var(--control-line);
   cursor: not-allowed;
 }
 .btn-link {
@@ -303,10 +311,11 @@ a {
    MARCADOR DEL ESTADO DE LA CANCHA (elemento principal)
    ===================================================================== */
 .marcador {
+  container-type: inline-size;
   position: relative;
   overflow: hidden;
-  background: #0b171c;
-  color: #eaf1f3;
+  background: var(--score-bg);
+  color: var(--score-ink);
   border-radius: 22px;
   padding: clamp(22px, 4vw, 44px);
   margin-top: 24px;
@@ -318,12 +327,14 @@ a {
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 400' fill='none' stroke='%23ffffff' stroke-opacity='.11' stroke-width='3'%3E%3Crect x='20' y='20' width='760' height='360'/%3E%3Cline x1='400' y1='20' x2='400' y2='380'/%3E%3Ccircle cx='400' cy='200' r='70'/%3E%3Crect x='20' y='110' width='150' height='180'/%3E%3Crect x='630' y='110' width='150' height='180'/%3E%3Cpath d='M170 145a55 55 0 0 1 0 110M630 145a55 55 0 0 0 0 110'/%3E%3C/svg%3E")
+  background: var(--score-ink);
+  opacity: 0.055;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 400' fill='none' stroke='%23ffffff' stroke-opacity='1' stroke-width='3'%3E%3Crect x='20' y='20' width='760' height='360'/%3E%3Cline x1='400' y1='20' x2='400' y2='380'/%3E%3Ccircle cx='400' cy='200' r='70'/%3E%3Crect x='20' y='110' width='150' height='180'/%3E%3Crect x='630' y='110' width='150' height='180'/%3E%3Cpath d='M170 145a55 55 0 0 1 0 110M630 145a55 55 0 0 0 0 110'/%3E%3C/svg%3E")
     right center/cover no-repeat;
 }
 .mar-label {
   margin: 0;
-  color: #afc0c7;
+  color: var(--score-muted);
   font-size: 1rem;
 }
 .mar-estado {
@@ -331,11 +342,11 @@ a {
   align-items: center;
   gap: 0.28em;
   margin: 0.12em 0 0;
-  font: 900 clamp(3.2rem, 13vw, 8rem)/0.92 var(--display);
+  font: 900 clamp(1.7rem, 10.5cqw, 8rem)/0.92 var(--display);
   color: var(--led);
 }
 .mar-estado.largo {
-  font-size: clamp(2.5rem, 9.5vw, 5.6rem);
+  font-size: clamp(1.1rem, 6.5cqw, 5.6rem);
 }
 .lampara {
   width: 0.4em;
@@ -343,7 +354,7 @@ a {
   border-radius: 50%;
   background: var(--led);
   box-shadow:
-    0 0 0 0.07em rgba(255, 255, 255, 0.12),
+    0 0 0 0.07em var(--score-line),
     0 0 0.5em var(--led);
   flex: none;
 }
@@ -369,7 +380,7 @@ a {
   margin: 0;
 }
 .mar-horas dt {
-  color: #afc0c7;
+  color: var(--score-muted);
   font-size: 0.98rem;
 }
 .mar-horas dd {
@@ -380,7 +391,7 @@ a {
 }
 .mar-nota {
   margin: 16px 0 0;
-  color: #c9d6db;
+  color: var(--score-note);
   max-width: 52ch;
 }
 .mar-prox {
@@ -390,21 +401,21 @@ a {
   gap: 6px 18px;
   margin-top: 26px;
   padding-top: 16px;
-  border-top: 1px solid rgba(255, 255, 255, 0.18);
+  border-top: 1px solid var(--score-line);
 }
 .mar-prox b {
   font: 800 1.5rem var(--display);
   letter-spacing: 0.02em;
 }
 .mar-prox .lbl {
-  color: #afc0c7;
+  color: var(--score-muted);
 }
 .btn-cta {
   margin-top: 26px;
   min-height: 56px;
   padding: 0 30px;
-  background: #f4f7f5;
-  color: #0b171c;
+  background: var(--panel);
+  color: var(--brand);
   font-size: 1.15rem;
   letter-spacing: 0.03em;
   border-radius: 14px;
@@ -417,7 +428,7 @@ a {
   border: 1px solid var(--line);
   border-left: 6px solid var(--tone, var(--brand));
   border-radius: 14px;
-  box-shadow: 0 1px 2px rgba(20, 35, 43, 0.06);
+  box-shadow: var(--shadow);
 }
 .marcador--admin::before {
   content: none;
@@ -507,7 +518,7 @@ a {
   width: 44px;
   height: 44px;
   border-radius: 10px;
-  border: 1.5px solid var(--line);
+  border: 1.5px solid var(--control-line);
   background: var(--panel-2);
   cursor: pointer;
   font-size: 1.2rem;
@@ -566,7 +577,7 @@ a {
   background: var(--fuera);
 }
 .dia.sel.con .pto {
-  background: #ffc266;
+  background: var(--selected-dot);
 }
 .leyenda {
   display: flex;
@@ -669,7 +680,7 @@ textarea {
   font: inherit;
   color: var(--ink);
   background: var(--panel);
-  border: 1.5px solid var(--ink-2);
+  border: 1.5px solid var(--control-line);
   border-radius: 10px;
   padding: 11px 12px;
   width: 100%;
@@ -717,7 +728,7 @@ textarea[aria-invalid="true"] {
 .modal-fondo {
   position: fixed;
   inset: 0;
-  background: rgba(6, 14, 18, 0.65);
+  background: var(--overlay);
   display: grid;
   place-items: center;
   padding: 16px;
@@ -767,7 +778,7 @@ textarea[aria-invalid="true"] {
   padding: 12px 16px;
   border-radius: 12px;
   font-weight: 700;
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-modal);
 }
 .toast.error {
   background: var(--peligro);

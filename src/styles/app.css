@@ -62,7 +62,8 @@
   max-width: 760px;
 }
 .cal-grid .dia:disabled {
-  opacity: 0.5;
+  background: var(--disabled-bg);
+  color: var(--disabled-ink);
   cursor: not-allowed;
 }
 .brand-mark {
@@ -79,7 +80,7 @@ dialog.modal {
   border: 1px solid var(--line);
 }
 dialog::backdrop {
-  background: rgba(6, 14, 18, 0.65);
+  background: var(--overlay);
 }
 .cal-sem span {
   min-width: 0;
@@ -102,11 +103,219 @@ dialog::backdrop {
 }
 
 @media (max-width: 560px) {
-  .cab-in { flex-wrap: wrap; }
-  .cab-acc { width: 100%; justify-content: flex-start; }
-  .marca-nombre { font-size: 1.4rem; }
-  .marca-muni { font-size: .82rem; }
-  .brand-mark { font-size: 1.5rem; }
-  .lado .marca-muni { max-width: 180px; }
-  .lado .brand-mark { display: none; }
+  .cab-in {
+    flex-wrap: wrap;
+  }
+  .cab-acc {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  .marca-nombre {
+    font-size: 1.4rem;
+  }
+  .marca-muni {
+    font-size: 0.82rem;
+  }
+  .brand-mark {
+    font-size: 1.5rem;
+  }
+  .lado .marca-muni {
+    max-width: 180px;
+  }
+  .lado .brand-mark {
+    display: none;
+  }
+}
+
+/* Estados compartidos por el sitio publico y todos los paneles. */
+::selection {
+  background: var(--brand);
+  color: var(--brand-ink);
+}
+input::placeholder,
+textarea::placeholder {
+  color: var(--ink-2);
+  opacity: 1;
+}
+input[type="radio"],
+input[type="checkbox"] {
+  accent-color: var(--brand);
+}
+input:disabled,
+select:disabled,
+textarea:disabled {
+  background: var(--disabled-bg);
+  color: var(--disabled-ink);
+  opacity: 1;
+  cursor: not-allowed;
+}
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+.btn,
+.cal-nav,
+.dia,
+.tabs button,
+.nav a,
+.nav button {
+  transition:
+    background-color 140ms ease,
+    border-color 140ms ease;
+}
+@media (hover: hover) {
+  .btn-primary:not(:disabled):hover {
+    background: var(--brand-hover);
+  }
+  .btn-peligro:not(:disabled):hover {
+    background: var(--peligro-hover);
+  }
+  .btn-sec:not(:disabled):hover,
+  .cal-nav:hover,
+  .dia:not(.sel):not(:disabled):hover,
+  .tabs button:not([aria-pressed="true"]):hover,
+  .cifras button:hover {
+    background: var(--brand-soft);
+  }
+  .btn-cta:not(:disabled):hover {
+    background: var(--panel-2);
+  }
+  .flyer-card:hover {
+    border-color: var(--brand);
+  }
+  tbody tr:hover {
+    background: var(--panel-2);
+  }
+}
+.nav a.router-link-exact-active {
+  background: var(--brand-soft);
+  color: var(--brand);
+  box-shadow: inset 3px 0 var(--brand);
+}
+.bloque,
+.auth-card,
+.cal,
+.dia-panel,
+.tarjeta-sol,
+.flyer-card,
+.tabla-wrap {
+  box-shadow: var(--shadow);
+}
+.modal {
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-modal);
+}
+.err:not(:empty) {
+  border-left: 3px solid var(--peligro);
+  padding-left: 10px;
+}
+.btn-link:disabled {
+  color: var(--disabled-ink);
+  cursor: not-allowed;
+}
+.dia.sel.fuera .pto {
+  background: var(--brand-ink);
+}
+.theme-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+}
+.theme-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--panel);
+}
+.theme-option {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    color 160ms ease,
+    box-shadow 160ms ease;
+}
+.theme-option svg {
+  width: 20px;
+  height: 20px;
+}
+.theme-option[aria-pressed="true"] {
+  background: var(--brand-soft);
+  color: var(--brand);
+  box-shadow: inset 0 0 0 1px var(--brand);
+}
+@media (hover: hover) {
+  .theme-option:not([aria-pressed="true"]):hover {
+    background: var(--panel-2);
+    color: var(--ink);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .theme-option {
+    transition: none;
+  }
+}
+.lado .theme-control {
+  padding: 0 6px;
+  flex-wrap: wrap;
+}
+.cab-acc {
+  align-items: center;
+}
+@media (max-width: 899px) {
+  .lado .theme-control {
+    padding: 0;
+  }
+}
+@media (max-width: 520px) {
+  .cal {
+    padding: 10px;
+  }
+  .cal-grid,
+  .cal-sem {
+    gap: 2px;
+  }
+  .dia {
+    min-height: 40px;
+  }
+  .cal-cab h3 {
+    font-size: 1.35rem;
+    text-align: center;
+  }
+  .dos-col {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .mar-horas {
+    flex-wrap: wrap;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .btn,
+  .cal-nav,
+  .dia,
+  .tabs button,
+  .nav a,
+  .nav button {
+    transition: none;
+  }
+}
+
+/* El dialogo conserva margen y la firma cabe en celulares angostos. */
+dialog.modal {
+  width: min(680px, calc(100% - 32px));
+}
+.hoja .lin-firma {
+  max-width: 100%;
 }
