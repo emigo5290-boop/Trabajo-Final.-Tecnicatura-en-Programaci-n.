@@ -24,10 +24,10 @@
   --bg: #f5f1e8;
   --panel: #fffbf3;
   --panel-2: #eee9de;
-  --ink: #243b3a;
-  --ink-2: #596a64;
+  --ink: #4b4c4c;
+  --ink-2: #4f504f;
   --line: #ded8cb;
-  --control-line: #76847b;
+  --control-line: #c2c1bc;
   --brand: #07566a;
   --brand-hover: #064657;
   --brand-ink: #fffbf3;
@@ -41,7 +41,7 @@
   --focus: #07566a;
   --libre: #356b42;
   --libre-soft: #e5eddd;
-  --reservada: #805211;
+  --reservada: #ea8f05;
   --reservada-soft: #f6e9cd;
   --ocupada: #b9232d;
   --ocupada-soft: #f7e4df;
@@ -54,7 +54,7 @@
   --shadow: 0 2px 12px rgb(36 59 58 / 6%);
   --shadow-modal: 0 16px 48px rgb(18 35 40 / 22%);
   --overlay: rgb(6 14 18 / 65%);
-  --score-bg: var(--brand-soft);
+  --score-bg: #c8e6ca;
   --score-ink: var(--ink);
   --score-muted: var(--ink-2);
   --score-line: var(--control-line);
@@ -179,6 +179,10 @@ a {
 }
 
 /* Colores por estado (--tone para chips y filas; --led para el marcador oscuro) */
+#card-estado {
+  position: relative;
+  top:5em;
+}
 .t-libre {
   --tone: var(--libre);
   --tone-soft: var(--libre-soft);
@@ -295,7 +299,7 @@ a {
 .btn-sec {
   background: transparent;
   color: var(--ink);
-  border-color: var(--control-line);
+  border-color: #dfdddd;
 }
 .btn-peligro {
   background: var(--peligro);
@@ -376,7 +380,7 @@ a {
   border-radius: 50%;
   background: var(--led);
   box-shadow:
-    0 0 0 0.07em var(--score-line),
+    0 0 0 0.07em #d6c135,
     0 0 0.5em var(--led);
   flex: none;
 }
@@ -441,6 +445,9 @@ a {
   font-size: 1.15rem;
   letter-spacing: 0.03em;
   border-radius: 14px;
+  position: relative;
+  left: 43em;
+  top:1.5em;
 }
 
 /* Variante sobria para Administración: sin el dibujo de la cancha, estilo panel de estado en vez de marcador de estadio */
