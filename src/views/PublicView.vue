@@ -31,7 +31,7 @@ const activities = computed(() =>
       bloqueados.
     </p>
     <AvailabilityCalendar v-model="day" />
-    <div class="actions"><ReserveButton /></div>
+    <!--<div class="actions"><ReserveButton /></div>-->
   </section>
   <section class="seccion">
     <h2>Información del SUM</h2>

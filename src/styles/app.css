@@ -108,7 +108,8 @@ dialog::backdrop {
   }
   .cab-acc {
     width: 100%;
-    justify-content: flex-start;
+    /* Cuando los controles bajan de línea en móvil, quedan alineados al borde derecho. */
+    justify-content: flex-end;
   }
   .marca-nombre {
     font-size: 1.4rem;

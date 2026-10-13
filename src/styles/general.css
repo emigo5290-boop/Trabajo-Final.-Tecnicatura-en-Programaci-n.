@@ -1,3 +1,23 @@
+/* Carga Okaluera desde public/fonts. Vite sirve public desde la raíz del sitio,
+   por eso la URL empieza en /fonts y no en /public/fonts. */
+@font-face {
+  font-family: "Barberchop";
+  src: url("/fonts/BarberChop.woff2") format("woff2");
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Carga Barber Chop para los encabezados y textos decorativos (--display). */
+@font-face {
+  font-family: "LTint";
+  src: url("/fonts/LTInternet-Regular.woff2") format("woff2");
+  /* El archivo declara un peso regular; el navegador sintetiza negritas si hacen falta. */
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* Paleta central: cambiar estos tokens para ajustar ambos temas. */
 :root {
   color-scheme: light;
@@ -44,14 +64,14 @@
   --score-ocupada: var(--ocupada);
   --score-fuera: var(--fuera);
   --selected-dot: var(--warning-accent);
-  --display:
-    "Big Shoulders Display", "Oswald", "Arial Narrow", Impact, sans-serif;
-  --texto:
-    "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", Roboto,
-    Arial, sans-serif;
-  box-sizing: border-box;
+  /* Barber Chop se usa en los elementos que referencian var(--display). */
+  --display: "LTint", Impact, "Arial Narrow", sans-serif;
+  /* Okaluera se usa en el texto general que referencia var(--texto). */
+  --texto: "LTint", system-ui, sans-serif;
+  /*box-sizing: border-box;
   padding-top: env(safe-area-inset-top, 0px);
-  padding-bottom: env(safe-area-inset-bottom, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);*/
+  --estados: "Barberchop", Impact, "Arial Narrow", sans-serif;
 }
 :root[data-theme="dark"] {
   color-scheme: dark;
@@ -246,6 +266,8 @@ a {
   gap: 8px;
   flex-wrap: wrap;
   justify-content: flex-end;
+  /* Evita que el grupo de tema e ingreso se estire hacia el centro. */
+  flex: none;
 }
 
 /* =====================================================================
@@ -342,7 +364,7 @@ a {
   align-items: center;
   gap: 0.28em;
   margin: 0.12em 0 0;
-  font: 900 clamp(1.7rem, 10.5cqw, 8rem)/0.92 var(--display);
+  font: 900 clamp(1.7rem, 10.5cqw, 8rem)/0.92 var(--estados);
   color: var(--led);
 }
 .mar-estado.largo {
