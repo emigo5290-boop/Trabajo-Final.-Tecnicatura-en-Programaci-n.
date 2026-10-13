@@ -14,7 +14,7 @@
 .auth-card h1 {
   font: 900 2.2rem/1.05 var(--display);
   margin-bottom: 6px;
-  text-align: center;
+  text-align: start;
 }
 .aviso-caja {
   border: 1.5px solid var(--brand);
