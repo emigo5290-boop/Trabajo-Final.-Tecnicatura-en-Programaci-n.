@@ -165,7 +165,6 @@ test("registro, verificación de un uso y acceso", async () => {
   assert.equal(
     await a.auth.login({
       usuario: user.email,
-      apellido: "",
       clave: account.clave,
     }),
     "verificacion",
@@ -176,13 +175,33 @@ test("registro, verificación de un uso y acceso", async () => {
   assert.equal(
     await a.auth.login({
       usuario: user.email,
-      apellido: "",
       clave: account.clave,
     }),
     "cliente",
   );
   await assert.rejects(a.auth.register(account));
 });
+test("el acceso de clientes usa el correo y la contraseña elegida", async () => {
+  const a = authentication();
+  await a.auth.register(account);
+  a.auth.verify("1234");
+  for (const credentials of [
+    { usuario: user.nombre, apellido: user.apellido, clave: account.clave },
+    { usuario: user.dni, clave: account.clave },
+    { usuario: user.email, clave: "Incorrecta123" },
+  ]) {
+    await assert.rejects(a.auth.login(credentials), /no son correctos/);
+    assert.equal(a.repository.read("sesion", null), null);
+  }
+  assert.equal(
+    await a.auth.login({
+      usuario: `  ${user.email.toUpperCase()}  `,
+      clave: account.clave,
+    }),
+    "cliente",
+  );
+});
+
 test("código vencido y recuperación requieren una verificación vigente", async () => {
   const a = authentication();
   await a.auth.register(account);
@@ -198,7 +217,6 @@ test("código vencido y recuperación requieren una verificación vigente", asyn
   assert.equal(
     await a.auth.login({
       usuario: user.email,
-      apellido: "",
       clave: "Nueva1234",
     }),
     "cliente",

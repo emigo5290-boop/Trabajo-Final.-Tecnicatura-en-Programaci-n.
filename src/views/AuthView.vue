@@ -34,18 +34,16 @@ const fields = computed(
   () =>
     ({
       login: [
-        ["usuario", "Usuario, correo, DNI o nombre", "text"],
-        ["apellido", "Apellido (solo al ingresar por nombre)", "text"],
+        ["usuario", "Usuario (correo electrónico)", "text"],
         ["clave", "Contraseña", "password"],
       ],
       registro: [
         ["nombre", "Nombre", "text"],
         ["apellido", "Apellido", "text"],
         ["dni", "DNI", "text"],
-        ["email", "Email", "email"],
+        ["email", "Usuario (correo electrónico)", "email"],
         ["clave", "Contraseña", "password"],
         ["clave2", "Confirmar contraseña", "password"],
-        ["cuil", "CUIL", "text"],
       ],
       recuperar: [["email", "Email", "email"]],
       "nueva-clave": [
@@ -114,7 +112,8 @@ function resend() {
       Para continuar, iniciá sesión con el perfil correspondiente.
     </p>
     <p v-if="mode === 'registro'" class="sub">
-      Todos los campos son obligatorios. La contraseña requiere al menos 8
+      Tu correo electrónico será tu usuario para iniciar sesión. Todos los campos
+      son obligatorios. Elegí una contraseña de al menos 8
       caracteres, con letras y números.
     </p>
     <p v-if="mode === 'recuperar'" class="sub">
@@ -140,7 +139,7 @@ function resend() {
         :label="label"
         :type="type"
         :error="errors[name]"
-        :required="!(mode === 'login' && name === 'apellido')"
+        required
         :maxlength="
           name === 'codigo'
             ? 4
@@ -151,7 +150,11 @@ function resend() {
                 : 100
         "
         :inputmode="
-          ['codigo', 'cuil', 'dni'].includes(name) ? 'numeric' : undefined
+          ['codigo', 'cuil', 'dni'].includes(name)
+            ? 'numeric'
+            : name === 'usuario' || name === 'email'
+              ? 'email'
+              : undefined
         "
         :autocomplete="
           name === 'codigo'

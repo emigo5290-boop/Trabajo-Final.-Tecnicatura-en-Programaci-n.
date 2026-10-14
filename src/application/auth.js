@@ -28,15 +28,13 @@ export function createAuthService({
     async login(d) {
       let session;
       if (
-        norm(d.usuario + " " + (d.apellido || "")) ===
-          norm(CONFIG.ADMIN.usuario) &&
+        norm(d.usuario) === norm(CONFIG.ADMIN.usuario) &&
         d.clave === CONFIG.ADMIN.clave
       )
         session = { rol: "admin" };
       const press = repository.read("prensa", null);
       if (
         !session &&
-        !d.apellido &&
         norm(d.usuario) === norm(press?.usuario || CONFIG.PRENSA.usuario) &&
         (press
           ? await password.matches(d.clave, press.passHash)
@@ -45,12 +43,7 @@ export function createAuthService({
         session = { rol: "prensa" };
       if (!session) {
         const candidates = users().filter(
-          (u) =>
-            norm(u.email) === norm(d.usuario) ||
-            u.dni === d.usuario.replace(/[.\s]/g, "") ||
-            (d.apellido &&
-              norm(u.nombre) === norm(d.usuario) &&
-              norm(u.apellido) === norm(d.apellido)),
+          (u) => norm(u.email) === norm(d.usuario),
         );
         let found;
         for (const u of candidates)
