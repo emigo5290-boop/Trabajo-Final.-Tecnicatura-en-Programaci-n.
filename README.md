@@ -37,7 +37,7 @@ Administración puede cambiar el acceso de Prensa. Las credenciales iniciales ya
 - Acceso: registro, verificación, reenvío, ingreso por correo/DNI/nombre y apellido, recuperación y nueva contraseña.
 - Cliente: solicitud con validación, borrador durante la sesión, vista previa de nota, confirmación, descarga PDF, reservas próximas y perfil.
 - Administración: resumen, calendario y detalles, solicitudes por estado, aprobación, rechazo, cancelación, informes PDF diarios/semanales/mensuales, estado de cancha y credenciales de Prensa.
-- Prensa: crear, editar y eliminar actividades, procesar/quitar flyers, consultar reservas confirmadas sin mostrar datos personales y editar información pública.
+- Prensa: una única pantalla sin menú lateral para crear, editar y eliminar eventos y avisos. Los eventos se muestran en tarjetas con fecha y flyer opcional; los avisos usan un globo con megáfono y permanecen publicados hasta su eliminación. El botón «Añadir evento» permite elegir el tipo de publicación.
 - Interfaz adaptable, modo oscuro del sistema, etiquetas de formularios, navegación por teclado y diálogos nativos con gestión de foco.
 
 ## Organización
@@ -58,6 +58,8 @@ src/
 ```
 
 ## Datos existentes
+
+Las publicaciones conservan la clave `sumbv_actividades` y agregan `tipo` (`evento` o `aviso`). Los registros anteriores, sin ese campo, se interpretan como eventos. Los avisos requieren título y mensaje; no guardan fecha, horarios ni flyer. La vista pública muestra avisos y eventos de hoy en adelante; Prensa conserva el listado completo para administrarlo. Las antiguas rutas `/prensa/actividades` y `/prensa/informacion` redirigen a `/prensa`.
 
 Se mantienen las claves `sumbv_usuarios`, `sumbv_reservas`, `sumbv_actividades`, `sumbv_info`, `sumbv_cancha`, `sumbv_prensa`, `sumbv_sesion`, `sumbv_contador` y `sumbv_codigos`. Si el proyecto se sirve bajo el mismo protocolo, dominio y puerto del original, puede leer esos datos. Un origen diferente tiene otro almacenamiento: los datos no se transfieren automáticamente. Los datos demo se generan solo cuando no existe la clave de reservas. Los borradores y verificaciones temporales anteriores no se importan; se inicia nuevamente ese proceso.
 

@@ -9,8 +9,7 @@ import CalendarView from "../views/CalendarView.vue";
 import ReservationsView from "../views/ReservationsView.vue";
 import CourtView from "../views/CourtView.vue";
 import PressAccessView from "../views/PressAccessView.vue";
-import ActivitiesView from "../views/ActivitiesView.vue";
-import InformationView from "../views/InformationView.vue";
+import PressView from "../views/PressView.vue";
 export const home = (role) =>
   ({ cliente: "/cliente", admin: "/administracion", prensa: "/prensa" })[
     role
@@ -29,11 +28,6 @@ export const menus = {
     ["/administracion/solicitudes", "Solicitudes"],
     ["/administracion/cancha", "Cancha"],
     ["/administracion/prensa", "Prensa"],
-  ],
-  prensa: [
-    ["/prensa", "Inicio"],
-    ["/prensa/actividades", "Actividades"],
-    ["/prensa/informacion", "Información"],
   ],
 };
 export function createAppRouter(app) {
@@ -83,9 +77,9 @@ export function createAppRouter(app) {
       ),
       secure("/administracion/cancha", CourtView, "admin", "Cancha"),
       secure("/administracion/prensa", PressAccessView, "admin", "Prensa"),
-      secure("/prensa", ActivitiesView, "prensa", "Actividades"),
-      secure("/prensa/actividades", ActivitiesView, "prensa", "Actividades"),
-      secure("/prensa/informacion", InformationView, "prensa", "Información"),
+      secure("/prensa", PressView, "prensa", "Prensa"),
+      { path: "/prensa/actividades", redirect: "/prensa" },
+      { path: "/prensa/informacion", redirect: "/prensa" },
       { path: "/:pathMatch(.*)*", redirect: "/" },
     ],
   });

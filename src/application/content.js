@@ -1,5 +1,6 @@
 import { validDate } from "../domain/availability.js";
 import { passwordErrors, assertValid } from "../domain/validation.js";
+import { preparePublication } from "../domain/publications.js";
 export function createContentService({ repository, session, password }) {
   function allow(role) {
     if (session()?.rol !== role)
@@ -45,16 +46,9 @@ export function createContentService({ repository, session, password }) {
     },
     saveActivity(d) {
       allow("prensa");
-      if (!d.titulo.trim() || d.titulo.length > 100 || !validDate(d.fecha))
-        throw Error("Completá el título y una fecha válida.");
-      if (d.fin && (!d.inicio || d.fin <= d.inicio))
-        throw Error("La hora final debe ser posterior al inicio.");
-      if ((d.descripcion || "").length > 400)
-        throw Error("La descripción admite hasta 400 caracteres.");
-      if (d.flyer && !/^data:image\/(jpeg|png|webp);base64,/.test(d.flyer))
-        throw Error("Formato de imagen inválido.");
+      const publication = preparePublication(d);
       const records = repository.read("actividades", []),
-        record = { ...d, id: d.id || crypto.randomUUID() };
+        record = { ...publication, id: d.id || crypto.randomUUID() };
       repository.write("actividades", [
         ...records.filter((a) => a.id !== record.id),
         record,

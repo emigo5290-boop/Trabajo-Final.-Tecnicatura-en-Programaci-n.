@@ -29,7 +29,21 @@ function logout() {
 }
 </script>
 <template>
-  <div v-if="secure && role" class="app">
+  <template v-if="secure && role === 'prensa'">
+    <header class="cab">
+      <div class="cab-in">
+        <AppBrand />
+        <div class="cab-acc press-header-actions">
+          <ThemeSelector />
+          <button type="button" class="btn btn-sec btn-chico" @click="logout">
+            Cerrar sesión
+          </button>
+        </div>
+      </div>
+    </header>
+    <main id="main" class="contenedor press-main" tabindex="-1"><slot /></main>
+  </template>
+  <div v-else-if="secure && role" class="app">
     <aside class="lado" :class="{ abierto: open }">
       <div class="lado-in">
         <AppBrand />
