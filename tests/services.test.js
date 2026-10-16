@@ -120,10 +120,63 @@ test("aprobación revalida el horario y estados finales no se reabren", () => {
   b.role("admin");
   b.service.decide(r.id, "aprobada");
   assert.throws(() => b.service.decide("other", "aprobada"), /superpone/);
-  b.service.decide(r.id, "cancelada");
+  assert.throws(() => b.service.decide(r.id, "cancelada"), /motivo/);
+  assert.throws(() => b.service.decide(r.id, "cancelada", "   "), /motivo/);
+  assert.equal(b.service.list().find((x) => x.id === r.id).estado, "aprobada");
+  b.service.decide(r.id, "cancelada", "  Mantenimiento del SUM  ");
+  assert.equal(
+    b.service.list().find((x) => x.id === r.id).motivoCancelacion,
+    "Mantenimiento del SUM",
+  );
   assert.throws(() => b.service.decide(r.id, "aprobada"), /estado/);
   b.service.decide("other", "aprobada");
 });
+test("una rechazada se puede aceptar si el horario sigue disponible", () => {
+  const b = bookings(),
+    r = b.service.request(form);
+  b.role("admin");
+  b.service.decide(r.id, "rechazada");
+  b.repository.write("reservas", [
+    ...b.service.list(),
+    { ...r, id: "other", estado: "aprobada" },
+  ]);
+  assert.throws(() => b.service.decide(r.id, "aprobada"), /superpone/);
+  assert.equal(b.service.list().find((x) => x.id === r.id).estado, "rechazada");
+  b.service.decide("other", "cancelada", "Cambio de horario");
+  b.service.decide(r.id, "aprobada");
+  assert.equal(b.service.list().find((x) => x.id === r.id).estado, "aprobada");
+});
+
+test("cancelar todas exige admin y motivo y conserva las solicitudes sin aprobar", () => {
+  const b = bookings(),
+    r = b.service.request(form);
+  assert.throws(() => b.service.cancelAll("Mantenimiento"), /permiso/);
+  const records = [
+    r,
+    { ...r, id: "a", estado: "aprobada" },
+    { ...r, id: "b", estado: "aprobada" },
+    { ...r, id: "c", estado: "rechazada" },
+  ];
+  b.repository.write("reservas", records);
+  b.role("admin");
+  assert.throws(() => b.service.cancelAll("   "), /motivo/);
+  assert.deepEqual(b.repository.read("reservas"), records);
+  assert.equal(b.service.cancelAll("  Mantenimiento  "), 2);
+  for (const item of b.service
+    .list()
+    .filter((x) => ["a", "b"].includes(x.id))) {
+    assert.equal(item.estado, "cancelada");
+    assert.equal(item.motivoCancelacion, "Mantenimiento");
+    assert.ok(item.decidida);
+  }
+  assert.deepEqual(
+    b.service.list().find((x) => x.id === r.id),
+    r,
+  );
+  assert.equal(b.service.list().find((x) => x.id === "c").estado, "rechazada");
+  assert.throws(() => b.service.cancelAll("Mantenimiento"), /No hay/);
+});
+
 test("roles también se validan en los servicios", () => {
   const b = bookings();
   assert.throws(() => b.service.decide("1", "aprobada"), /permiso/);
