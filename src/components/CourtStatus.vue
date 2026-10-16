@@ -40,9 +40,6 @@ const labels = {
           <dd>{{ status.ref.fin }}</dd>
         </div>
       </dl>
-      <p v-else-if="status.manual" class="mar-nota">
-        Estado definido por la Administración.
-      </p>
       <div v-if="status.proxima" class="mar-prox">
         <span>Próxima reserva</span><b>{{ fechaCorta(status.proxima.fecha) }}</b
         ><b>{{ status.proxima.inicio }} – {{ status.proxima.fin }}</b>

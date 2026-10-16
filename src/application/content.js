@@ -15,17 +15,20 @@ export function createContentService({ repository, session, password }) {
         )
       )
         throw Error("Estado inválido.");
+      if (c.estado !== "disponible" && !c.motivo?.trim())
+        throw Error("Escribí un mensaje breve para este estado.");
       if (
         c.estado === "fuera_de_servicio" &&
-        (!c.motivo.trim() ||
-          !validDate(c.desde) ||
+        (!validDate(c.desde) ||
           (c.hasta && (!validDate(c.hasta) || c.hasta < c.desde)))
       )
-        throw Error("Indicá un motivo y un período válido.");
+        throw Error("Indicá un período válido.");
       repository.write(
         "cancha",
         c.estado === "fuera_de_servicio"
-          ? { ...c }
+          ? { ...c, motivo: c.motivo.trim() }
+          : c.estado !== "disponible"
+            ? { estado: c.estado, motivo: c.motivo.trim(), desde: "", hasta: "" }
           : { estado: c.estado, motivo: "", desde: "", hasta: "" },
       );
     },
