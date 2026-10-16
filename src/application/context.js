@@ -13,8 +13,14 @@ export function createApplication({ storage, temp, password, pdf, flyer }) {
   const revision = ref(0),
     notice = ref(""),
     clock = ref(new Date());
+  let noticeTimer;
   function notify(message) {
+    clearTimeout(noticeTimer);
     notice.value = message;
+    if (message)
+      noticeTimer = setTimeout(() => {
+        notice.value = "";
+      }, 3000);
   }
   const repository = {
     read: (...args) => storage.read(...args),

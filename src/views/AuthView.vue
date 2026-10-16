@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, ref, computed } from "vue";
+import { reactive, ref, computed, onMounted, onUnmounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { home } from "../router/index.js";
 import { useApp } from "../application/context.js";
@@ -22,7 +22,24 @@ const d = reactive({
   errors = ref({}),
   error = ref(""),
   busy = ref(false),
+  formVersion = ref(0),
   verification = ref(app.temp.read("verification", null));
+function clearLogin() {
+  if (props.mode !== "login") return;
+  d.usuario = "";
+  d.clave = "";
+  errors.value = {};
+  error.value = "";
+  formVersion.value++;
+}
+function restorePage(event) {
+  if (event.persisted) clearLogin();
+}
+onMounted(() => {
+  clearLogin();
+  window.addEventListener("pageshow", restorePage);
+});
+onUnmounted(() => window.removeEventListener("pageshow", restorePage));
 const titles = {
   login: "Iniciar sesión",
   registro: "Registrarse",
@@ -112,9 +129,9 @@ function resend() {
       Para continuar, iniciá sesión con el perfil correspondiente.
     </p>
     <p v-if="mode === 'registro'" class="sub">
-      Tu correo electrónico será tu usuario para iniciar sesión. Todos los campos
-      son obligatorios. Elegí una contraseña de al menos 8
-      caracteres, con letras y números.
+      Tu correo electrónico será tu usuario para iniciar sesión. Todos los
+      campos son obligatorios. Elegí una contraseña de al menos 8 caracteres,
+      con letras y números.
     </p>
     <p v-if="mode === 'recuperar'" class="sub">
       Ingresá el correo de tu cuenta para generar un código de prueba.
@@ -130,7 +147,11 @@ function resend() {
         ><span v-else>Si existe la cuenta, habrá un código disponible.</span>
       </p></template
     >
-    <form @submit.prevent="submit">
+    <form
+      :key="formVersion"
+      :autocomplete="mode === 'login' ? 'off' : undefined"
+      @submit.prevent="submit"
+    >
       <FormField
         v-for="[name, label, type] in fields"
         :key="name"
@@ -139,6 +160,8 @@ function resend() {
         :label="label"
         :type="type"
         :error="errors[name]"
+        :data-lpignore="mode === 'login' ? 'true' : undefined"
+        :data-1p-ignore="mode === 'login' ? '' : undefined"
         required
         :maxlength="
           name === 'codigo'
@@ -157,14 +180,14 @@ function resend() {
               : undefined
         "
         :autocomplete="
-          name === 'codigo'
-            ? 'one-time-code'
-            : type === 'password'
-              ? mode === 'login'
-                ? 'current-password'
-                : 'new-password'
-              : name === 'usuario'
-                ? 'username'
+          mode === 'login'
+            ? type === 'password'
+              ? 'new-password'
+              : 'off'
+            : name === 'codigo'
+              ? 'one-time-code'
+              : type === 'password'
+                ? 'new-password'
                 : name === 'email'
                   ? 'email'
                   : 'off'

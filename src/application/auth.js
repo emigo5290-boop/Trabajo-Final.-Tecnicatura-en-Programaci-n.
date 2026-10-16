@@ -68,7 +68,7 @@ export function createAuthService({
         apellido: d.apellido.trim(),
         email: d.email.trim(),
         dni: d.dni.replace(/[.\s]/g, ""),
-        cuil: d.cuil.trim(),
+        cuil: (d.cuil || "").trim(),
       };
       assertValid(registrationErrors(d, users()));
       const passHash = await password.hash(d.clave);

@@ -30,6 +30,7 @@ onMounted(() => {
 });
 onUnmounted(() => {
   clearInterval(timer);
+  app.notify("");
   window.removeEventListener("storage", app.refresh);
   window.removeEventListener("pageshow", app.refresh);
 });

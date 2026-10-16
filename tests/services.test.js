@@ -181,6 +181,62 @@ test("registro, verificación de un uso y acceso", async () => {
   );
   await assert.rejects(a.auth.register(account));
 });
+test("el registro permite crear y verificar cuentas sin CUIL", async () => {
+  const a = authentication();
+  for (const [index, cuil] of [undefined, "", "   "].entries()) {
+    const data = {
+      nombre: "Ana",
+      apellido: "Pérez",
+      dni: String(23456780 + index),
+      email: `registro${index}@ejemplo.com`,
+      clave: "Prueba123",
+      clave2: "Prueba123",
+    };
+    if (cuil !== undefined) data.cuil = cuil;
+    await a.auth.register(data);
+    assert.equal(a.temp.read("verification", null).email, data.email);
+    assert.equal(a.auth.verify("1234"), "login");
+    assert.equal(
+      await a.auth.login({ usuario: data.email, clave: data.clave }),
+      "cliente",
+    );
+    a.auth.logout();
+  }
+  const users = a.repository.read("usuarios", []);
+  assert.equal(users.length, 3);
+  assert.ok(users.every((u) => u.verificado && u.cuil === ""));
+});
+
+test("el registro sin CUIL conserva las validaciones y evita cuentas duplicadas", async () => {
+  const a = authentication(),
+    data = { ...account, cuil: "" };
+  await a.auth.register(data);
+  for (const [change, field] of [
+    [{ nombre: "A" }, "nombre"],
+    [{ apellido: "P" }, "apellido"],
+    [{ dni: "123" }, "dni"],
+    [{ email: "invalido" }, "email"],
+    [{ clave: "corta", clave2: "corta" }, "clave"],
+    [{ clave2: "Diferente123" }, "clave2"],
+    [{ dni: data.dni }, "dni"],
+    [{ email: data.email.toUpperCase() }, "email"],
+  ]) {
+    await assert.rejects(
+      a.auth.register({
+        ...data,
+        dni: "23456789",
+        email: "otra@ejemplo.com",
+        ...change,
+      }),
+      (error) => {
+        assert.deepEqual(Object.keys(error.fields), [field]);
+        return true;
+      },
+    );
+  }
+  assert.equal(a.repository.read("usuarios", []).length, 1);
+});
+
 test("el acceso de clientes usa el correo y la contraseña elegida", async () => {
   const a = authentication();
   await a.auth.register(account);

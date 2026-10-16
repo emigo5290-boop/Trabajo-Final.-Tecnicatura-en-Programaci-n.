@@ -11,11 +11,12 @@ export function registrationErrors(d, users) {
     if (!name.test((d[k] || "").trim())) e[k] = "Ingresá al menos 2 letras.";
   if (!/^\d{7,8}$/.test(d.dni || ""))
     e.dni = "El DNI debe tener 7 u 8 números.";
-  if (!/^\d{11}$/.test(d.cuil || "")) e.cuil = "El CUIL debe tener 11 números.";
+  if (d.cuil && !/^\d{11}$/.test(d.cuil))
+    e.cuil = "El CUIL debe tener 11 números.";
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(d.email || ""))
     e.email = "Ingresá un correo válido.";
   for (const k of ["dni", "cuil", "email"])
-    if (users.some((u) => norm(u[k]) === norm(d[k])))
+    if (d[k] && users.some((u) => norm(u[k]) === norm(d[k])))
       e[k] = "Ya existe una cuenta con este dato.";
   return e;
 }
