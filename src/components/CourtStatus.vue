@@ -49,5 +49,6 @@ const labels = {
       </div>
     </div>
     <ReserveButton v-if="reserve" class="btn-cta" />
+    <slot />
   </section>
 </template>

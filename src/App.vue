@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, onUnmounted, watch, nextTick } from "vue";
+import { computed, onMounted, onUnmounted, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useApp } from "./application/context.js";
 import AppLayout from "./components/AppLayout.vue";
@@ -14,13 +14,6 @@ watch(
   () => {
     if (route.meta.role && app.session.value?.rol !== route.meta.role)
       router.replace("/login");
-  },
-);
-watch(
-  () => route.path,
-  async () => {
-    await nextTick();
-    document.querySelector("main h1")?.focus({ preventScroll: true });
   },
 );
 onMounted(() => {

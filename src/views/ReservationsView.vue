@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed } from "vue";
+import { useRoute } from "vue-router";
 import { useApp } from "../application/context.js";
 import { sortReservations } from "../domain/availability.js";
 import { fechaCorta } from "../domain/date.js";
@@ -10,16 +11,24 @@ import ReportDialog from "../components/ReportDialog.vue";
 import FormField from "../components/FormField.vue";
 const props = defineProps({ requests: Boolean }),
   app = useApp(),
+  route = useRoute(),
   selectedId = ref(null),
   pending = ref(null),
   report = ref(false),
   error = ref("");
+const stateFilter = computed(() =>
+  !props.requests && ["aprobada", "rechazada"].includes(route.query.estado)
+    ? route.query.estado
+    : null,
+);
 const records = computed(() =>
   sortReservations(
     app.reservations.value.filter((r) =>
       props.requests
         ? r.estado === "pendiente"
-        : ["aprobada", "rechazada"].includes(r.estado),
+        : stateFilter.value
+          ? r.estado === stateFilter.value
+          : ["aprobada", "rechazada"].includes(r.estado),
     ),
   ),
 );
@@ -56,8 +65,24 @@ function decide(id, value, reason = "") {
 </script>
 <template>
   <div v-if="!requests" class="barra">
-    <p>{{ records.length }} reservas registradas</p>
+    <p>
+      {{ records.length }} reservas
+      {{
+        stateFilter === "aprobada"
+          ? "aprobadas"
+          : stateFilter === "rechazada"
+            ? "rechazadas"
+            : "registradas"
+      }}
+    </p>
     <div class="actions">
+      <RouterLink
+        v-if="stateFilter"
+        to="/administracion/reservas"
+        class="btn btn-sec"
+      >
+        Ver todas las reservas
+      </RouterLink>
       <button class="btn btn-primary" @click="report = true">
         Generar informe PDF
       </button>
@@ -135,7 +160,11 @@ function decide(id, value, reason = "") {
       {{
         requests
           ? "No hay solicitudes pendientes para mostrar."
-          : "No hay reservas aprobadas o rechazadas para mostrar."
+          : stateFilter === "aprobada"
+            ? "No hay reservas aprobadas para mostrar."
+            : stateFilter === "rechazada"
+              ? "No hay reservas rechazadas para mostrar."
+              : "No hay reservas aprobadas o rechazadas para mostrar."
       }}
     </p>
   </div>
