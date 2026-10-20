@@ -5,6 +5,7 @@ import { iso, fechaCorta } from "../domain/date.js";
 import { sortReservations } from "../domain/availability.js";
 import CourtStatus from "../components/CourtStatus.vue";
 import CalendarView from "./CalendarView.vue";
+import MyReservationsView from "./MyReservationsView.vue";
 const app = useApp();
 const today = computed(() => iso(app.clock.value));
 const upcoming = computed(() =>
@@ -24,7 +25,6 @@ const states = {
   <CourtStatus
     :class="{ 'marcador--resumen': app.session.value.rol === 'admin' }"
     :admin="app.session.value.rol === 'admin'"
-    :reserve="app.session.value.rol === 'cliente'"
   >
     <div v-if="app.session.value.rol === 'admin'" class="cifras">
       <RouterLink
@@ -88,6 +88,19 @@ const states = {
           No hay reservas aprobadas.
         </p>
       </section>
-    </div></template
+    </div>
+  </template>
+  <section
+    v-else-if="app.session.value.rol === 'cliente'"
+    class="seccion"
+    aria-labelledby="client-reservations-title"
   >
+    <div class="client-reservations-header">
+      <h2 id="client-reservations-title">Mis reservas</h2>
+      <RouterLink class="btn btn-primary btn-chico" to="/cliente/reservar">
+        Reservar cancha
+      </RouterLink>
+    </div>
+    <MyReservationsView />
+  </section>
 </template>

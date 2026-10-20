@@ -3,7 +3,6 @@ import PublicView from "../views/PublicView.vue";
 import AuthView from "../views/AuthView.vue";
 import DashboardView from "../views/DashboardView.vue";
 import BookingView from "../views/BookingView.vue";
-import MyReservationsView from "../views/MyReservationsView.vue";
 import ProfileView from "../views/ProfileView.vue";
 import ReservationsView from "../views/ReservationsView.vue";
 import CourtView from "../views/CourtView.vue";
@@ -17,7 +16,6 @@ export const menus = {
   cliente: [
     ["/cliente", "Inicio"],
     ["/cliente/reservar", "Reservar cancha"],
-    ["/cliente/reservas", "Mis reservas"],
     ["/cliente/perfil", "Perfil"],
   ],
   admin: [
@@ -50,12 +48,7 @@ export function createAppRouter(app) {
       ),
       secure("/cliente", DashboardView, "cliente", "Inicio"),
       secure("/cliente/reservar", BookingView, "cliente", "Reservar cancha"),
-      secure(
-        "/cliente/reservas",
-        MyReservationsView,
-        "cliente",
-        "Mis reservas",
-      ),
+      { path: "/cliente/reservas", redirect: "/cliente" },
       secure("/cliente/perfil", ProfileView, "cliente", "Perfil"),
       secure("/administracion", DashboardView, "admin", "Inicio"),
       { path: "/administracion/calendario", redirect: "/administracion" },

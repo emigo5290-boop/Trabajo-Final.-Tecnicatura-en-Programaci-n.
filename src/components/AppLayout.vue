@@ -65,7 +65,6 @@ function logout() {
             :key="path"
             :to="path"
             >{{ title }}</RouterLink
-          ><RouterLink v-if="role !== 'admin'" to="/">Ver sitio público</RouterLink
           ><button class="salir" @click="logout">Cerrar sesión</button>
         </nav>
       </div>
