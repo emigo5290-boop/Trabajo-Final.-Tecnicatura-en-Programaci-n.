@@ -1,7 +1,8 @@
 <script setup>
-import { nextTick, reactive, ref } from "vue";
+import { computed, nextTick, reactive, ref } from "vue";
 import { useApp } from "../application/context.js";
 import { CLASS_DAYS } from "../domain/classes.js";
+import { CONFIG } from "../config.js";
 import AppModal from "./AppModal.vue";
 import FormField from "./FormField.vue";
 
@@ -14,6 +15,8 @@ const form = reactive({
   nombre: props.lesson.nombre || "",
   descripcion: props.lesson.descripcion || "",
   imagen: props.lesson.imagen || "",
+  lleno: props.lesson.lleno === true,
+  diasLlenos: [...(props.lesson.diasLlenos || [])],
   horarios: (props.lesson.horarios || []).map((schedule) => ({
     ...schedule,
     key: nextKey++,
@@ -41,19 +44,66 @@ async function uploadPhoto(event) {
   }
 }
 
-async function addSchedule() {
-  const key = nextKey++;
-  form.horarios.push({ key, dia: "", inicio: "", fin: "" });
-  await nextTick();
-  document.getElementById(`class-day-${key}`)?.focus();
+const customOpen = ref(false);
+const custom = reactive({ dia: "Lunes", inicio: "", fin: "" });
+const scheduleKey = (item) => `${item.dia}-${item.inicio}-${item.fin}`;
+const options = computed(() => {
+  const items = new Map();
+  for (const dia of CLASS_DAYS) {
+    for (let hour = CONFIG.HORA_APERTURA; hour < CONFIG.HORA_CIERRE; hour++) {
+      const item = {
+        dia,
+        inicio: `${String(hour).padStart(2, "0")}:00`,
+        fin: `${String(hour + 1).padStart(2, "0")}:00`,
+      };
+      items.set(scheduleKey(item), item);
+    }
+  }
+  for (const item of [
+    ...app.classes.value.flatMap((lesson) => lesson.horarios),
+    ...form.horarios,
+  ])
+    items.set(scheduleKey(item), item);
+  return [...items.values()].sort(
+    (a, b) =>
+      CLASS_DAYS.indexOf(a.dia) - CLASS_DAYS.indexOf(b.dia) ||
+      a.inicio.localeCompare(b.inicio) ||
+      a.fin.localeCompare(b.fin),
+  );
+});
+const selected = (item) =>
+  form.horarios.find((entry) => scheduleKey(entry) === scheduleKey(item));
+function toggleSchedule(item, checked) {
+  if (checked)
+    form.horarios.push({
+      dia: item.dia,
+      inicio: item.inicio,
+      fin: item.fin,
+      key: nextKey++,
+    });
+  else
+    form.horarios = form.horarios.filter(
+      (entry) => scheduleKey(entry) !== scheduleKey(item),
+    );
 }
-async function removeSchedule(index) {
-  form.horarios.splice(index, 1);
+function toggleFull(item, checked) {
+  const entry = selected(item);
+  if (entry) entry.lleno = checked;
+}
+async function addSchedule() {
+  if (!custom.inicio || !custom.fin || custom.fin <= custom.inicio) {
+    error.value = "Indicá un inicio y un fin válidos para el horario.";
+    return;
+  }
+  if (selected(custom)) {
+    error.value = "Ese horario ya está seleccionado.";
+    return;
+  }
+  toggleSchedule(custom, true);
+  customOpen.value = false;
   error.value = "";
   await nextTick();
-  const next = form.horarios[index] || form.horarios[index - 1];
-  if (next) document.getElementById(`class-day-${next.key}`)?.focus();
-  else addButton.value?.focus();
+  addButton.value?.focus();
 }
 function save() {
   if (busy.value) return;
@@ -123,47 +173,53 @@ function save() {
       <fieldset class="class-schedule-editor">
         <legend>Horarios semanales</legend>
         <p class="ayuda">
-          Agregá los días y horarios de la clase. Podés dejarlos pendientes y
-          completarlos más adelante.
+          Marcá los horarios de la clase. Usá Agregar horario si necesitás otro.
+          Marcá Lleno para cerrar las inscripciones de un horario.
         </p>
-        <fieldset
-          v-for="(schedule, index) in form.horarios"
-          :key="schedule.key"
-          class="class-schedule-row"
+        <label class="schedule-check"
+          ><input v-model="form.lleno" type="checkbox" /> Clase llena (cerrar
+          todas las inscripciones)</label
         >
-          <legend>Horario {{ index + 1 }}</legend>
-          <FormField
-            v-model="schedule.dia"
-            :name="`class-day-${schedule.key}`"
-            label="Día"
-            :options="CLASS_DAYS"
-            required
-          />
-          <div class="class-time-fields">
-            <FormField
-              v-model="schedule.inicio"
-              :name="`class-start-${schedule.key}`"
-              label="Desde"
-              type="time"
-              required
-            />
-            <FormField
-              v-model="schedule.fin"
-              :name="`class-end-${schedule.key}`"
-              label="Hasta"
-              type="time"
-              required
-            />
+        <details v-for="day in CLASS_DAYS" :key="day" class="schedule-day">
+          <summary>
+            {{ day }} ·
+            {{ form.horarios.filter((item) => item.dia === day).length }}
+            seleccionados
+          </summary>
+          <label class="schedule-check">
+            <input v-model="form.diasLlenos" type="checkbox" :value="day" />
+            Clase llena (bloquear las inscripciones de este día)
+          </label>
+          <p v-if="form.diasLlenos.includes(day)" class="ayuda">
+            Todos los horarios de {{ day }} quedan cerrados a nuevas
+            inscripciones, incluidos los que agregues después.
+          </p>
+          <div class="schedule-options">
+            <div
+              v-for="option in options.filter((item) => item.dia === day)"
+              :key="scheduleKey(option)"
+              class="schedule-option"
+            >
+              <label class="schedule-check"
+                ><input
+                  type="checkbox"
+                  :checked="!!selected(option)"
+                  @change="toggleSchedule(option, $event.target.checked)"
+                />
+                {{ option.inicio }} – {{ option.fin }}</label
+              >
+              <label v-if="selected(option)" class="schedule-check"
+                ><input
+                  type="checkbox"
+                  :checked="!!selected(option).lleno"
+                  :disabled="form.diasLlenos.includes(day) || form.lleno"
+                  @change="toggleFull(option, $event.target.checked)"
+                />
+                Lleno</label
+              >
+            </div>
           </div>
-          <button
-            type="button"
-            class="btn btn-sec btn-chico"
-            :aria-label="`Quitar horario ${index + 1}`"
-            @click="removeSchedule(index)"
-          >
-            Quitar horario
-          </button>
-        </fieldset>
+        </details>
         <p v-if="!form.horarios.length" class="class-pending">
           Se mostrará “Horarios a confirmar”.
         </p>
@@ -171,10 +227,40 @@ function save() {
           ref="addButton"
           type="button"
           class="btn btn-sec btn-chico"
-          @click="addSchedule"
+          :aria-expanded="customOpen"
+          @click="customOpen = !customOpen"
         >
-          ＋ Agregar horario
+          {{ customOpen ? "Cancelar nuevo horario" : "+ Agregar horario" }}
         </button>
+        <div v-if="customOpen" class="class-schedule-row">
+          <FormField
+            v-model="custom.dia"
+            name="custom-day"
+            label="Día"
+            :options="CLASS_DAYS"
+          />
+          <div class="class-time-fields">
+            <FormField
+              v-model="custom.inicio"
+              name="custom-start"
+              label="Desde"
+              type="time"
+            />
+            <FormField
+              v-model="custom.fin"
+              name="custom-end"
+              label="Hasta"
+              type="time"
+            />
+          </div>
+          <button
+            type="button"
+            class="btn btn-sec btn-chico"
+            @click="addSchedule"
+          >
+            Agregar a la checklist
+          </button>
+        </div>
       </fieldset>
       <p v-if="error" class="err" role="alert">{{ error }}</p>
       <div class="actions">
@@ -188,3 +274,39 @@ function save() {
     </form>
   </AppModal>
 </template>
+
+<style scoped>
+.schedule-day {
+  border-bottom: 1px solid var(--line);
+  padding: 12px 0;
+}
+.schedule-day summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+.schedule-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 8px;
+  padding-top: 12px;
+}
+.schedule-option {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px;
+}
+.schedule-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  cursor: pointer;
+}
+.schedule-check input {
+  width: auto;
+}
+</style>

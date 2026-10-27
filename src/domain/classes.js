@@ -1,6 +1,10 @@
 import photos from "./class-photos.json" with { type: "json" };
 
 export const CLASS_PHOTOS = photos;
+export const isScheduleFull = (lesson, schedule) =>
+  lesson.lleno === true ||
+  schedule.lleno === true ||
+  (lesson.diasLlenos || []).includes(schedule.dia);
 export const CLASS_DAYS = [
   "Lunes",
   "Martes",
@@ -69,6 +73,12 @@ export const classPhotoCredit = (src) =>
   Object.values(photos).find((photo) => photo.src === src);
 
 export function prepareClass(data) {
+  const diasLlenos = data.diasLlenos ?? [];
+  if (
+    !Array.isArray(diasLlenos) ||
+    diasLlenos.some((day) => !CLASS_DAYS.includes(day))
+  )
+    throw Error("Revisá los días marcados como clase llena.");
   const nombre = (data.nombre || "").trim();
   const descripcion = (data.descripcion || "").trim();
   const imagen = data.imagen || "";
@@ -99,7 +109,12 @@ export function prepareClass(data) {
       throw Error(
         `La hora de fin del horario ${index + 1} debe ser posterior al inicio.`,
       );
-    return { dia, inicio, fin };
+    return {
+      dia,
+      inicio,
+      fin,
+      ...(horario.lleno === true ? { lleno: true } : {}),
+    };
   });
   horarios.sort(
     (a, b) =>
@@ -114,5 +129,14 @@ export function prepareClass(data) {
         `Los horarios del ${current.dia.toLocaleLowerCase("es")} se superponen.`,
       );
   }
-  return { nombre, descripcion, imagen, horarios };
+  return {
+    nombre,
+    descripcion,
+    imagen,
+    horarios,
+    ...(data.lleno === true ? { lleno: true } : {}),
+    ...(diasLlenos.length
+      ? { diasLlenos: CLASS_DAYS.filter((day) => diasLlenos.includes(day)) }
+      : {}),
+  };
 }

@@ -1,5 +1,5 @@
 <script setup>
-import { classPhotoCredit } from "../domain/classes.js";
+import { classPhotoCredit, isScheduleFull } from "../domain/classes.js";
 defineProps({
   lesson: { type: Object, required: true },
   editable: Boolean,
@@ -61,6 +61,7 @@ defineEmits(["edit", "remove"]);
     <ul v-if="lesson.horarios.length" class="class-schedule">
       <li v-for="(schedule, index) in lesson.horarios" :key="index">
         <span>{{ schedule.dia }}</span>
+        <span v-if="isScheduleFull(lesson, schedule)">Lleno</span>
         <strong
           ><time>{{ schedule.inicio }}</time> –
           <time>{{ schedule.fin }}</time></strong
@@ -70,11 +71,19 @@ defineEmits(["edit", "remove"]);
     <p v-else class="class-pending">Horarios a confirmar</p>
     <div v-if="enrollable" class="class-card-actions">
       <RouterLink
+        v-if="
+          !lesson.lleno &&
+          (!lesson.horarios.length ||
+            lesson.horarios.some((item) => !isScheduleFull(lesson, item)))
+        "
         class="btn btn-primary"
         :to="`/clases/${lesson.id}/inscripcion`"
         :aria-label="`Inscribirme a ${lesson.nombre}`"
         >Inscribirme</RouterLink
       >
+      <button v-else class="btn btn-sec" disabled>
+        Lleno · Inscripciones cerradas
+      </button>
     </div>
     <div v-if="editable" class="class-card-actions">
       <button

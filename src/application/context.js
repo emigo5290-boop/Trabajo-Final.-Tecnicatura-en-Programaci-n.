@@ -94,6 +94,9 @@ export function createApplication({ storage, temp, password, pdf, flyer }) {
     reservations,
     activities,
     classes,
+    teachers: computed(() =>
+      session.value?.rol === "admin" ? read("profesores", []) : [],
+    ),
     classEnrollments: computed(() =>
       session.value?.rol === "admin" ? read("inscripciones_clases", []) : [],
     ),

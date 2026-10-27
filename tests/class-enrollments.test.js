@@ -29,6 +29,82 @@ function setup() {
   };
 }
 
+test("los horarios llenos se guardan y bloquean inscripciones incluso con datos antiguos", () => {
+  const { app, storage, reload } = setup();
+  storage.write("sesion", { rol: "admin" });
+  app.refresh();
+  const open = { dia: "Lunes", inicio: "18:00", fin: "19:00" };
+  const full = { dia: "Martes", inicio: "18:00", fin: "19:00", lleno: true };
+  const lesson = { ...defaultClasses()[0], horarios: [open, full] };
+  app.content.saveClass(lesson);
+  assert.equal(storage.read("clases")[0].horarios[1].lleno, true);
+  assert.throws(
+    () =>
+      app.enrollments.register({ ...form, horario: { ...full, lleno: false } }),
+    /lleno/,
+  );
+  assert.equal(reload().length, 0);
+  app.enrollments.register({ ...form, horario: open });
+  app.content.saveClass({ ...lesson, lleno: true });
+  assert.throws(
+    () =>
+      app.enrollments.register({
+        ...form,
+        email: "otra@example.com",
+        horario: open,
+      }),
+    /llena/,
+  );
+  assert.equal(reload().length, 1);
+  app.content.saveClass({
+    ...lesson,
+    lleno: false,
+    horarios: [open, { ...full, lleno: false }],
+  });
+  app.enrollments.register({
+    ...form,
+    email: "otra@example.com",
+    horario: full,
+  });
+  assert.equal(reload().length, 2);
+});
+
+test("clase llena por día bloquea todas sus franjas y conserva los otros días", () => {
+  const { app, storage, reload } = setup();
+  storage.write("sesion", { rol: "admin" });
+  app.refresh();
+  const monday = { dia: "Lunes", inicio: "18:00", fin: "19:00" };
+  const later = { ...monday, inicio: "19:00", fin: "20:00" };
+  const tuesday = { ...monday, dia: "Martes" };
+  const lesson = {
+    ...defaultClasses()[0],
+    horarios: [monday, later, tuesday],
+    diasLlenos: ["Lunes"],
+  };
+  app.content.saveClass(lesson);
+  assert.deepEqual(storage.read("clases")[0].diasLlenos, ["Lunes"]);
+  for (const horario of [monday, later])
+    assert.throws(
+      () => app.enrollments.register({ ...form, horario }),
+      /lleno/,
+    );
+  app.enrollments.register({ ...form, horario: tuesday });
+  assert.equal(reload().length, 1);
+  const added = { ...monday, inicio: "20:00", fin: "21:00" };
+  app.content.saveClass({ ...lesson, horarios: [...lesson.horarios, added] });
+  assert.throws(
+    () => app.enrollments.register({ ...form, horario: added }),
+    /lleno/,
+  );
+  app.content.saveClass({ ...lesson, diasLlenos: [] });
+  app.enrollments.register({
+    ...form,
+    email: "otra@example.com",
+    horario: monday,
+  });
+  assert.equal(reload().length, 2);
+});
+
 test("la inscripción directa persiste sin crear una cuenta y admite horarios pendientes", () => {
   const { app, storage, reload } = setup();
   const receipt = app.enrollments.register({

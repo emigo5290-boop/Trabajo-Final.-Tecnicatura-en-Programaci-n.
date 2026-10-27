@@ -12,6 +12,38 @@ export function createContentService({ repository, session, password }) {
       throw Error("No tenés permiso para esta operación.");
   }
   return {
+    saveTeacher(data) {
+      allow("admin");
+      const nombre = (data.nombre || "").trim();
+      const descripcion = (data.descripcion || "").trim();
+      if (!nombre || nombre.length > 100)
+        throw Error(
+          "Ingresá el nombre y apellido del profesor (hasta 100 caracteres).",
+        );
+      if (descripcion.length > 300)
+        throw Error("La presentación admite hasta 300 caracteres.");
+      const classes = repository.read("clases", defaultClasses());
+      if (
+        !Array.isArray(data.claseIds) ||
+        data.claseIds.some((id) => !classes.some((lesson) => lesson.id === id))
+      )
+        throw Error("Elegí clases que estén publicadas.");
+      const records = repository.read("profesores", []);
+      if (data.id && !records.some((record) => record.id === data.id))
+        throw Error("Este profesor ya no existe.");
+      const record = {
+        id: data.id || crypto.randomUUID(),
+        nombre,
+        descripcion,
+        claseIds: [...new Set(data.claseIds)],
+      };
+      repository.write(
+        "profesores",
+        data.id
+          ? records.map((item) => (item.id === record.id ? record : item))
+          : [...records, record],
+      );
+    },
     saveClass(data) {
       allow("admin");
       const prepared = prepareClass(data);

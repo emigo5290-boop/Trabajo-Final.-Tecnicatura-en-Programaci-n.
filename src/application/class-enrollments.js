@@ -1,4 +1,4 @@
-import { defaultClasses } from "../domain/classes.js";
+import { defaultClasses, isScheduleFull } from "../domain/classes.js";
 import { enrollmentErrors } from "../domain/class-enrollments.js";
 import { assertValid } from "../domain/validation.js";
 
@@ -16,6 +16,8 @@ export function createClassEnrollmentService({
         .find((item) => item.id === data.claseId);
       if (!lesson)
         throw Error("La clase ya no está disponible. Elegí otra clase.");
+      if (lesson.lleno)
+        throw Error("Esta clase está llena. No admite nuevas inscripciones.");
       const horario = lesson.horarios.length
         ? lesson.horarios.find(
             (item) =>
@@ -28,6 +30,8 @@ export function createClassEnrollmentService({
         throw Error(
           "Elegí un horario vigente. Los horarios pueden haber cambiado.",
         );
+      if (horario && isScheduleFull(lesson, horario))
+        throw Error("Este horario está lleno. Elegí otro horario.");
       const email = data.email.trim().toLowerCase();
       const nombre = data.nombre.trim(),
         apellido = data.apellido.trim();

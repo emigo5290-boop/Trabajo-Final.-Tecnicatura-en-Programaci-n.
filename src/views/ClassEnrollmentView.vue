@@ -3,6 +3,7 @@ import { computed, reactive, ref } from "vue";
 import { useRoute } from "vue-router";
 import { useApp } from "../application/context.js";
 import { scheduleLabel } from "../domain/class-enrollments.js";
+import { isScheduleFull } from "../domain/classes.js";
 import FormField from "../components/FormField.vue";
 
 const app = useApp(),
@@ -19,6 +20,21 @@ const form = reactive({
   observaciones: "",
   consentimiento: false,
 });
+const closed = computed(
+  () =>
+    lesson.value?.lleno ||
+    (lesson.value?.horarios.length > 0 &&
+      lesson.value.horarios.every((item) =>
+        isScheduleFull(lesson.value, item),
+      )),
+);
+const selectedFull = computed(() =>
+  lesson.value?.horarios.some(
+    (item) =>
+      isScheduleFull(lesson.value, item) &&
+      scheduleLabel(item) === form.horario,
+  ),
+);
 const errors = ref({}),
   error = ref(""),
   receipt = ref(null),
@@ -83,7 +99,10 @@ function submit() {
         Completá los datos de la persona que asistirá y un contacto para
         gestionar la inscripción. No necesitás crear una cuenta.
       </p>
-      <form class="bloque" @submit.prevent="submit">
+      <p v-if="closed" class="aviso-caja" role="status">
+        Lleno. Esta clase no admite nuevas inscripciones.
+      </p>
+      <form v-else class="bloque" @submit.prevent="submit">
         <div class="fila2">
           <FormField
             v-model="form.nombre"
@@ -125,14 +144,24 @@ function submit() {
           :error="errors.telefono"
           required
         />
-        <FormField
-          v-if="lesson.horarios.length"
-          v-model="form.horario"
-          name="enrollment-schedule"
-          label="Horario de la clase"
-          :options="lesson.horarios.map(scheduleLabel)"
-          required
-        />
+        <div v-if="lesson.horarios.length" class="campo">
+          <label for="enrollment-schedule">Horario de la clase</label>
+          <select id="enrollment-schedule" v-model="form.horario" required>
+            <option value="">Elegí un horario</option>
+            <option
+              v-for="schedule in lesson.horarios"
+              :key="scheduleLabel(schedule)"
+              :value="scheduleLabel(schedule)"
+              :disabled="isScheduleFull(lesson, schedule)"
+            >
+              {{ scheduleLabel(schedule)
+              }}{{ isScheduleFull(lesson, schedule) ? " · Lleno" : "" }}
+            </option>
+          </select>
+          <p v-if="selectedFull" class="err" role="alert">
+            Este horario está lleno. Elegí otro horario.
+          </p>
+        </div>
         <p v-else class="class-enrollment-pending">
           Horarios a confirmar. Podés registrar tu inscripción ahora y consultar
           el horario más adelante.
@@ -162,7 +191,11 @@ function submit() {
         </p>
         <p v-if="error" class="err" role="alert">{{ error }}</p>
         <div class="actions">
-          <button type="submit" class="btn btn-primary" :disabled="busy">
+          <button
+            type="submit"
+            class="btn btn-primary"
+            :disabled="busy || selectedFull"
+          >
             {{ busy ? "Registrando…" : "Enviar inscripción" }}</button
           ><RouterLink class="btn btn-sec" to="/clases">Cancelar</RouterLink>
         </div>

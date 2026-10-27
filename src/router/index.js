@@ -7,6 +7,7 @@ import ProfileView from "../views/ProfileView.vue";
 import ReservationsView from "../views/ReservationsView.vue";
 import CourtView from "../views/CourtView.vue";
 import ClassesView from "../views/ClassesView.vue";
+import TeachersView from "../views/TeachersView.vue";
 import PublicClassesView from "../views/PublicClassesView.vue";
 import ClassEnrollmentView from "../views/ClassEnrollmentView.vue";
 import ClassEnrollmentsView from "../views/ClassEnrollmentsView.vue";
@@ -30,6 +31,7 @@ export const menus = {
     ["/administracion/verificacion-cuentas", "Verificación de cuentas"],
     ["/administracion/cancha", "Cancha"],
     ["/administracion/clases", "Clases"],
+    ["/administracion/profesores", "Profesores"],
     ["/administracion/prensa", "Prensa"],
   ],
 };
@@ -85,6 +87,7 @@ export function createAppRouter(app) {
       ),
       secure("/administracion/cancha", CourtView, "admin", "Cancha"),
       secure("/administracion/clases", ClassesView, "admin", "Clases"),
+      secure("/administracion/profesores", TeachersView, "admin", "Profesores"),
       secure(
         "/administracion/clases/inscripciones",
         ClassEnrollmentsView,
