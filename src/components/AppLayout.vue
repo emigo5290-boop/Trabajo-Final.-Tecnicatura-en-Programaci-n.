@@ -80,6 +80,9 @@ function logout() {
         <AppBrand />
         <div class="cab-acc">
           <ThemeSelector />
+          <RouterLink class="btn btn-sec btn-chico" to="/clases"
+            >Clases</RouterLink
+          >
           <RouterLink
             class="btn btn-sec btn-chico"
             :to="role ? home(role) : '/login'"

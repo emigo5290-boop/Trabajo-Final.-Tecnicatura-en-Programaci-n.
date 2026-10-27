@@ -5,6 +5,7 @@
 @import "./administracion.css";
 @import "./cliente.css";
 @import "./prensa.css";
+@import "./clases.css";
 .nav a {
   display: block;
   padding: 12px 14px;

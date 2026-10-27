@@ -9,6 +9,7 @@ import {
 import CourtStatus from "../components/CourtStatus.vue";
 import AvailabilityCalendar from "../components/AvailabilityCalendar.vue";
 import ActivityCard from "../components/ActivityCard.vue";
+import ClassCard from "../components/ClassCard.vue";
 const app = useApp(),
   day = ref(iso(new Date()));
 const activities = computed(() =>
@@ -40,6 +41,21 @@ const activities = computed(() =>
     </p>
     <AvailabilityCalendar v-model="day" />
     <!--<div class="actions"><ReserveButton /></div>-->
+  </section>
+  <section id="clases" class="seccion" aria-labelledby="public-classes-title">
+    <h2 id="public-classes-title">Clases</h2>
+    <p class="sub">Conocé las clases del SUM y sus horarios semanales.</p>
+    <div v-if="app.classes.value.length" class="classes-grid">
+      <ClassCard
+        v-for="lesson in app.classes.value"
+        :key="lesson.id"
+        :lesson="lesson"
+        enrollable
+      />
+    </div>
+    <p v-else class="vacio-msg">
+      Próximamente publicaremos nuevas clases y horarios.
+    </p>
   </section>
   <section class="seccion">
     <h2>Información del SUM</h2>

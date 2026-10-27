@@ -1,12 +1,44 @@
 import { validDate } from "../domain/availability.js";
 import { passwordErrors, assertValid } from "../domain/validation.js";
 import { preparePublication } from "../domain/publications.js";
+import {
+  defaultClasses,
+  prepareClass,
+  withClassDetails,
+} from "../domain/classes.js";
 export function createContentService({ repository, session, password }) {
   function allow(role) {
     if (session()?.rol !== role)
       throw Error("No tenés permiso para esta operación.");
   }
   return {
+    saveClass(data) {
+      allow("admin");
+      const prepared = prepareClass(data);
+      const records = repository
+        .read("clases", defaultClasses())
+        .map(withClassDetails);
+      if (data.id && !records.some((record) => record.id === data.id))
+        throw Error(
+          "Esta clase ya no existe. Volvé a crearla si la necesitás.",
+        );
+      const record = { ...prepared, id: data.id || crypto.randomUUID() };
+      repository.write(
+        "clases",
+        data.id
+          ? records.map((item) => (item.id === record.id ? record : item))
+          : [...records, record],
+      );
+    },
+    removeClass(id) {
+      allow("admin");
+      repository.write(
+        "clases",
+        repository
+          .read("clases", defaultClasses())
+          .filter((item) => item.id !== id),
+      );
+    },
     saveCourt(c) {
       allow("admin");
       if (
@@ -28,8 +60,13 @@ export function createContentService({ repository, session, password }) {
         c.estado === "fuera_de_servicio"
           ? { ...c, motivo: c.motivo.trim() }
           : c.estado !== "disponible"
-            ? { estado: c.estado, motivo: c.motivo.trim(), desde: "", hasta: "" }
-          : { estado: c.estado, motivo: "", desde: "", hasta: "" },
+            ? {
+                estado: c.estado,
+                motivo: c.motivo.trim(),
+                desde: "",
+                hasta: "",
+              }
+            : { estado: c.estado, motivo: "", desde: "", hasta: "" },
       );
     },
     async savePress(d) {

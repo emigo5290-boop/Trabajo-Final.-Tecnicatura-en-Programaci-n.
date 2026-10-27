@@ -6,6 +6,10 @@ import BookingView from "../views/BookingView.vue";
 import ProfileView from "../views/ProfileView.vue";
 import ReservationsView from "../views/ReservationsView.vue";
 import CourtView from "../views/CourtView.vue";
+import ClassesView from "../views/ClassesView.vue";
+import PublicClassesView from "../views/PublicClassesView.vue";
+import ClassEnrollmentView from "../views/ClassEnrollmentView.vue";
+import ClassEnrollmentsView from "../views/ClassEnrollmentsView.vue";
 import AccountVerificationView from "../views/AccountVerificationView.vue";
 import PressAccessView from "../views/PressAccessView.vue";
 import PressView from "../views/PressView.vue";
@@ -25,6 +29,7 @@ export const menus = {
     ["/administracion/solicitudes", "Solicitudes"],
     ["/administracion/verificacion-cuentas", "Verificación de cuentas"],
     ["/administracion/cancha", "Cancha"],
+    ["/administracion/clases", "Clases"],
     ["/administracion/prensa", "Prensa"],
   ],
 };
@@ -40,6 +45,16 @@ export function createAppRouter(app) {
     scrollBehavior: () => ({ top: 0 }),
     routes: [
       { path: "/", component: PublicView, meta: { title: "SUM Municipal" } },
+      {
+        path: "/clases",
+        component: PublicClassesView,
+        meta: { title: "Clases" },
+      },
+      {
+        path: "/clases/:id/inscripcion",
+        component: ClassEnrollmentView,
+        meta: { title: "Inscripción a clases" },
+      },
       ...["login", "registro", "verificacion", "recuperar", "nueva-clave"].map(
         (mode) => ({
           path: "/" + mode,
@@ -69,6 +84,13 @@ export function createAppRouter(app) {
         { requests: true },
       ),
       secure("/administracion/cancha", CourtView, "admin", "Cancha"),
+      secure("/administracion/clases", ClassesView, "admin", "Clases"),
+      secure(
+        "/administracion/clases/inscripciones",
+        ClassEnrollmentsView,
+        "admin",
+        "Inscripciones a clases",
+      ),
       secure(
         "/administracion/verificacion-cuentas",
         AccountVerificationView,
