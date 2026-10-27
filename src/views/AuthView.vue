@@ -12,12 +12,12 @@ const d = reactive({
     usuario: "",
     apellido: "",
     nombre: "",
-    dni: "",
     cuil: "",
     email: "",
     clave: "",
     clave2: "",
     codigo: "",
+    dniImagen: "",
   }),
   errors = ref({}),
   error = ref(""),
@@ -57,7 +57,6 @@ const fields = computed(
       registro: [
         ["nombre", "Nombre", "text"],
         ["apellido", "Apellido", "text"],
-        ["dni", "DNI", "text"],
         ["email", "Usuario (correo electrónico)", "email"],
         ["clave", "Contraseña", "password"],
         ["clave2", "Confirmar contraseña", "password"],
@@ -98,7 +97,7 @@ async function submit() {
     if (props.mode === "verificacion") {
       destination = "/" + app.auth.verify(d.codigo);
       if (destination === "/login")
-        app.notify("Cuenta verificada. Ya podés iniciar sesión.");
+        app.notify("Correo verificado. Administración debe aprobar tu acceso.");
     }
     if (props.mode === "nueva-clave") {
       await app.auth.reset(d);
@@ -111,6 +110,34 @@ async function submit() {
     });
   } catch (e) {
     errors.value = e.fields || {};
+    error.value = e.message;
+  } finally {
+    busy.value = false;
+  }
+}
+async function attachDni(event) {
+  d.dniImagen = "";
+  error.value = "";
+  const file = event.target.files?.[0];
+  if (!file) return;
+  if (
+    !["image/jpeg", "image/png", "image/webp"].includes(file.type) ||
+    file.size > 2 * 1024 * 1024
+  ) {
+    error.value = "Adjuntá una imagen JPG, PNG o WebP de hasta 2 MB.";
+    event.target.value = "";
+    return;
+  }
+  busy.value = true;
+  try {
+    d.dniImagen = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = () =>
+        reject(Error("No se pudo leer la imagen del QR del DNI."));
+      reader.readAsDataURL(file);
+    });
+  } catch (e) {
     error.value = e.message;
   } finally {
     busy.value = false;
@@ -193,6 +220,31 @@ function resend() {
                   : 'off'
         "
       />
+      <div v-if="mode === 'registro'" class="campo">
+        <a
+          class="btn btn-sec"
+          href="https://mi.argentina.gob.ar/"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Ir a Mi Argentina (abre en otra pestaña)</a
+        >
+        <label for="dni-imagen">QR del DNI</label>
+        <input
+          id="dni-imagen"
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          required
+          aria-describedby="dni-imagen-help"
+          @change="attachDni"
+        />
+        <small id="dni-imagen-help"
+          >Adjuntá una imagen del QR del DNI en JPG, PNG o WebP, hasta 2 MB.
+          Administración revisará el QR para aprobar el acceso.</small
+        >
+        <p v-if="errors.dniImagen" class="err" role="alert">
+          {{ errors.dniImagen }}
+        </p>
+      </div>
       <p v-if="error" class="err" role="alert">{{ error }}</p>
       <div class="actions" :class="{ 'login-actions': mode === 'login' }">
         <button class="btn btn-primary" :disabled="busy">

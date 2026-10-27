@@ -38,6 +38,7 @@ const user = {
   cuil: "27123456789",
   email: "ana@ejemplo.com",
   verificado: true,
+  dniImagen: "data:image/png;base64,aGVsbG8=",
 };
 function bookings() {
   const repository = memory();
@@ -208,10 +209,48 @@ function authentication() {
     },
     clock: () => clock,
     code: () => "1234",
+    session: () => ({ rol: "admin" }),
   });
   return { auth, repository, temp, tick: (n) => (clock += n) };
 }
 const account = { ...user, clave: "Prueba123", clave2: "Prueba123" };
+
+test("el registro con QR del DNI permite omitir el número de documento", async () => {
+  const a = authentication();
+  const { dni, ...data } = account;
+  await a.auth.register(data);
+  const saved = a.repository.read("usuarios")[0];
+  assert.equal(saved.dni, "");
+  assert.equal(saved.dniImagen, data.dniImagen);
+  assert.equal(saved.acceso, "pendiente");
+  a.auth.verify("1234");
+  a.auth.approveAccount(saved.id);
+  assert.equal(
+    await a.auth.login({ usuario: data.email, clave: data.clave }),
+    "cliente",
+  );
+});
+
+test("aprobar cuentas requiere admin, correo verificado e imagen del DNI", async () => {
+  const a = authentication();
+  assert.deepEqual(a.repository.read("usuarios", []), []);
+  await assert.rejects(a.auth.register({ ...account, dniImagen: "" }));
+  await a.auth.register(account);
+  const id = a.repository.read("usuarios")[0].id;
+  assert.throws(() => a.auth.approveAccount(id), /verificar/);
+  a.auth.verify("1234");
+  const unauthorized = createAuthService({
+    repository: a.repository,
+    temp: a.temp,
+    password: {},
+    session: () => ({ rol: "cliente", id }),
+  });
+  assert.throws(() => unauthorized.approveAccount(id), /permiso/);
+  assert.equal(a.repository.read("usuarios")[0].acceso, "pendiente");
+  a.auth.approveAccount(id);
+  assert.equal(a.repository.read("usuarios")[0].acceso, "aprobado");
+  assert.throws(() => a.auth.approveAccount(id), /pendiente/);
+});
 test("registro, verificación de un uso y acceso", async () => {
   const a = authentication();
   await a.auth.register(account);
@@ -225,6 +264,11 @@ test("registro, verificación de un uso y acceso", async () => {
   assert.throws(() => a.auth.verify("0000"), /incorrecto/);
   assert.equal(a.auth.verify("1234"), "login");
   assert.throws(() => a.auth.verify("1234"));
+  await assert.rejects(
+    a.auth.login({ usuario: user.email, clave: account.clave }),
+    /pendiente/,
+  );
+  a.auth.approveAccount(a.repository.read("usuarios")[0].id);
   assert.equal(
     await a.auth.login({
       usuario: user.email,
@@ -238,6 +282,7 @@ test("el registro permite crear y verificar cuentas sin CUIL", async () => {
   const a = authentication();
   for (const [index, cuil] of [undefined, "", "   "].entries()) {
     const data = {
+      dniImagen: user.dniImagen,
       nombre: "Ana",
       apellido: "Pérez",
       dni: String(23456780 + index),
@@ -249,6 +294,9 @@ test("el registro permite crear y verificar cuentas sin CUIL", async () => {
     await a.auth.register(data);
     assert.equal(a.temp.read("verification", null).email, data.email);
     assert.equal(a.auth.verify("1234"), "login");
+    a.auth.approveAccount(
+      a.repository.read("usuarios").find((u) => u.email === data.email).id,
+    );
     assert.equal(
       await a.auth.login({ usuario: data.email, clave: data.clave }),
       "cliente",
@@ -294,6 +342,7 @@ test("el acceso de clientes usa el correo y la contraseña elegida", async () =>
   const a = authentication();
   await a.auth.register(account);
   a.auth.verify("1234");
+  a.auth.approveAccount(a.repository.read("usuarios")[0].id);
   for (const credentials of [
     { usuario: user.nombre, apellido: user.apellido, clave: account.clave },
     { usuario: user.dni, clave: account.clave },
@@ -318,6 +367,7 @@ test("código vencido y recuperación requieren una verificación vigente", asyn
   assert.throws(() => a.auth.verify("1234"), /venció/);
   a.auth.resend();
   a.auth.verify("1234");
+  a.auth.approveAccount(a.repository.read("usuarios")[0].id);
   await assert.rejects(a.auth.reset(account), /Verificá/);
   a.auth.recover(user.email);
   assert.equal(a.auth.verify("1234"), "nueva-clave");

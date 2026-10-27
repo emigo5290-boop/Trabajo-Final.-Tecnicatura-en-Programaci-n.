@@ -6,6 +6,7 @@ import BookingView from "../views/BookingView.vue";
 import ProfileView from "../views/ProfileView.vue";
 import ReservationsView from "../views/ReservationsView.vue";
 import CourtView from "../views/CourtView.vue";
+import AccountVerificationView from "../views/AccountVerificationView.vue";
 import PressAccessView from "../views/PressAccessView.vue";
 import PressView from "../views/PressView.vue";
 export const home = (role) =>
@@ -22,6 +23,7 @@ export const menus = {
     ["/administracion", "Inicio"],
     ["/administracion/reservas", "Reservas"],
     ["/administracion/solicitudes", "Solicitudes"],
+    ["/administracion/verificacion-cuentas", "Verificación de cuentas"],
     ["/administracion/cancha", "Cancha"],
     ["/administracion/prensa", "Prensa"],
   ],
@@ -67,6 +69,12 @@ export function createAppRouter(app) {
         { requests: true },
       ),
       secure("/administracion/cancha", CourtView, "admin", "Cancha"),
+      secure(
+        "/administracion/verificacion-cuentas",
+        AccountVerificationView,
+        "admin",
+        "Verificación de cuentas",
+      ),
       secure("/administracion/prensa", PressAccessView, "admin", "Prensa"),
       secure("/prensa", PressView, "prensa", "Prensa"),
       { path: "/prensa/actividades", redirect: "/prensa" },

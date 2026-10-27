@@ -70,12 +70,20 @@ export function createApplication({ storage, temp, password, pdf, flyer }) {
   const refresh = () => {
     revision.value++;
     clock.value = new Date();
-    if (session.value?.rol === "cliente" && !user.value?.verificado)
+    if (
+      session.value?.rol === "cliente" &&
+      (!user.value?.verificado || user.value?.acceso !== "aprobado")
+    )
       repository.write("sesion", null);
   };
   return {
     session,
     user,
+    pendingAccounts: computed(() =>
+      session.value?.rol === "admin"
+        ? read("usuarios", []).filter((u) => u.acceso === "pendiente")
+        : [],
+    ),
     court,
     reservations,
     activities,
